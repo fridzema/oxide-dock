@@ -164,8 +164,9 @@ oxidedock/
 Runs on every push to `main` and on pull requests:
 
 1. **Lint** — ESLint, Oxlint, Prettier check
-2. **Test** — Vitest unit tests
-3. **Build** — Tauri build on Linux, macOS, and Windows
+2. **Test** — Vitest unit tests, Playwright e2e (chromium), Rust tests with coverage
+3. **Audit** — `cargo audit` for Rust dependency vulnerabilities
+4. **Build** — Tauri build on Linux, macOS, and Windows (main branch only)
 
 ### Release Pipeline (`release.yml`)
 

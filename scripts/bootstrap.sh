@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+# Escape special characters for use in sed replacement strings
+sed_escape() {
+  printf '%s' "$1" | sed 's/[\/&\\]/\\&/g'
+}
+
 echo "OxideDock Bootstrap — Rename your project"
 echo "==========================================="
 echo ""
@@ -14,27 +19,37 @@ if [[ -z "$APP_NAME" || -z "$PKG_NAME" || -z "$BUNDLE_ID" ]]; then
   exit 1
 fi
 
+SAFE_APP_NAME=$(sed_escape "$APP_NAME")
+SAFE_PKG_NAME=$(sed_escape "$PKG_NAME")
+SAFE_BUNDLE_ID=$(sed_escape "$BUNDLE_ID")
+
 echo ""
 echo "Renaming OxideDock → $APP_NAME ($PKG_NAME)"
 echo ""
 
 # package.json
-sed -i.bak "s/\"oxidedock\"/\"$PKG_NAME\"/" package.json
+sed -i.bak "s/\"oxidedock\"/\"$SAFE_PKG_NAME\"/" package.json
 
 # Cargo.toml
-sed -i.bak "s/name = \"oxidedock\"/name = \"$PKG_NAME\"/" src-tauri/Cargo.toml
-sed -i.bak "s/name = \"oxidedock_lib\"/name = \"${PKG_NAME}_lib\"/" src-tauri/Cargo.toml
-sed -i.bak "s/OxideDock: a Rust + Vue desktop application foundation/$APP_NAME: a Rust + Vue desktop application/" src-tauri/Cargo.toml
+sed -i.bak "s/name = \"oxidedock\"/name = \"$SAFE_PKG_NAME\"/" src-tauri/Cargo.toml
+sed -i.bak "s/name = \"oxidedock_lib\"/name = \"${SAFE_PKG_NAME}_lib\"/" src-tauri/Cargo.toml
+sed -i.bak "s/OxideDock: a Rust + Vue desktop application foundation/$SAFE_APP_NAME: a Rust + Vue desktop application/" src-tauri/Cargo.toml
 
 # tauri.conf.json
-sed -i.bak "s/\"OxideDock\"/\"$APP_NAME\"/g" src-tauri/tauri.conf.json
-sed -i.bak "s/com.oxidedock.desktop/$BUNDLE_ID/" src-tauri/tauri.conf.json
+sed -i.bak "s/\"OxideDock\"/\"$SAFE_APP_NAME\"/g" src-tauri/tauri.conf.json
+sed -i.bak "s/com.oxidedock.desktop/$SAFE_BUNDLE_ID/" src-tauri/tauri.conf.json
 
 # index.html
-sed -i.bak "s/<title>OxideDock<\/title>/<title>$APP_NAME<\/title>/" index.html
+sed -i.bak "s/<title>OxideDock<\/title>/<title>$SAFE_APP_NAME<\/title>/" index.html
 
 # main.rs
-sed -i.bak "s/oxidedock_lib/${PKG_NAME}_lib/" src-tauri/src/main.rs
+sed -i.bak "s/oxidedock_lib/${SAFE_PKG_NAME}_lib/" src-tauri/src/main.rs
+
+# README heading
+sed -i.bak "s/^# OxideDock$/# $SAFE_APP_NAME/" README.md
+
+# CONTRIBUTING heading
+sed -i.bak "s/^# Contributing to OxideDock$/# Contributing to $SAFE_APP_NAME/" CONTRIBUTING.md
 
 # Clean up .bak files
 find . -name "*.bak" -delete

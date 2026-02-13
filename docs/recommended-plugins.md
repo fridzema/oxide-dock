@@ -91,7 +91,7 @@ bun add @tauri-apps/plugin-updater
      "updater": {
        "pubkey": "YOUR_PUBLIC_KEY_HERE",
        "endpoints": [
-         "https://github.com/YOUR_USERNAME/oxidedock/releases/latest/download/latest.json"
+         "https://github.com/fridzema/oxide-dock/releases/latest/download/latest.json"
        ]
      }
    }

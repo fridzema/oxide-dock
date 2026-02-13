@@ -6,7 +6,7 @@ If you discover a security vulnerability, please report it responsibly.
 
 **Do not open a public issue.**
 
-Instead, use [GitHub Security Advisories](https://github.com/YOUR_USERNAME/oxidedock/security/advisories/new) to privately report the vulnerability.
+Instead, use [GitHub Security Advisories](https://github.com/fridzema/oxide-dock/security/advisories/new) to privately report the vulnerability.
 
 You should receive a response within 48 hours. We will work with you to understand the issue and coordinate a fix before any public disclosure.
 
@@ -18,6 +18,6 @@ You should receive a response within 48 hours. We will work with you to understa
 
 ## Security Practices
 
-- Dependencies are monitored via `cargo audit` (Rust) and reviewed regularly
+- Dependencies are audited via `cargo audit` in CI (Rust) and reviewed regularly
 - Tauri capabilities follow least-privilege principles
 - Content Security Policy is enabled by default

@@ -18,6 +18,15 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            bun-${{ runner.os }}-
+
       - run: bun install --frozen-lockfile
 
       - name: ESLint
@@ -36,6 +45,15 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            bun-${{ runner.os }}-
+
       - run: bun install --frozen-lockfile
 
       - name: Vitest with coverage
@@ -48,13 +66,35 @@ jobs:
 
       - uses: oven-sh/setup-bun@v2
 
+      - uses: actions/cache@v4
+        with:
+          path: |
+            ~/.bun/install/cache
+            node_modules
+          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+          restore-keys: |
+            bun-${{ runner.os }}-
+
       - run: bun install --frozen-lockfile
 
+      # CI runs chromium only for speed; local `make test-e2e` uses all browsers from playwright.config.ts
       - name: Install Playwright browsers
         run: bunx playwright install --with-deps chromium
 
       - name: Playwright
         run: bunx playwright test --project=chromium
+
+  cargo-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: taiki-e/install-action@cargo-audit
+
+      - name: Cargo audit
+        run: cd src-tauri && cargo audit
 
   rust-checks:
     strategy:
@@ -103,7 +143,7 @@ jobs:
 
       - name: Rust tests with coverage
         if: matrix.platform == 'ubuntu-22.04'
-        run: cd src-tauri && cargo llvm-cov --fail-under-lines 100 --ignore-filename-regex '(main|lib)\.rs'
+        run: cd src-tauri && cargo llvm-cov --fail-under-lines 100 --ignore-filename-regex '(main|lib|handlers)\.rs'
 
       - name: Rust tests
         if: matrix.platform != 'ubuntu-22.04'
@@ -111,7 +151,7 @@ jobs:
 
   build:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    needs: [lint, test-unit, test-e2e, rust-checks]
+    needs: [lint, test-unit, test-e2e, rust-checks, cargo-audit]
     strategy:
       fail-fast: false
       matrix:

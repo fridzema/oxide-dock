@@ -104,7 +104,7 @@ coverage: rust-coverage
 	bun run test:unit:coverage
 
 # CI
-ci: lint format-check test-unit rust-coverage build
+ci: lint format-check test-unit test-e2e rust-test rust-coverage build
 
 # Setup
 setup:

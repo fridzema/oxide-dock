@@ -3,10 +3,10 @@
   "image": "mcr.microsoft.com/devcontainers/rust:1-bookworm",
   "features": {
     "ghcr.io/devcontainers/features/node:1": {
-      "version": "lts"
+      "version": "22"
     }
   },
-  "postCreateCommand": "curl -fsSL https://bun.sh/install | bash && export PATH=$HOME/.bun/bin:$PATH && make setup",
+  "postCreateCommand": "curl -fsSL https://bun.sh/install | bash -s 'bun-v1.3.8' && export PATH=$HOME/.bun/bin:$PATH && make setup",
   "forwardPorts": [1420],
   "customizations": {
     "vscode": {

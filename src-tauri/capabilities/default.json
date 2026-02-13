@@ -1,17 +1,18 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Capability for the main window",
+  "description": "Capability for the main window. Production-safe: no global filesystem access. User-selected files are accessed via dialog-granted temporary scope.",
   "windows": ["main"],
   "permissions": [
     "core:default",
+    "log:default",
     "notification:default",
     "clipboard-manager:allow-read-text",
     "clipboard-manager:allow-write-text",
     "dialog:default",
     {
       "identifier": "fs:allow-read-text-file",
-      "allow": [{ "path": "**" }]
+      "allow": [{ "path": "$APPDATA/**" }, { "path": "$APPCONFIG/**" }, { "path": "$RESOURCE/**" }]
     },
     "opener:default",
     "os:default"
