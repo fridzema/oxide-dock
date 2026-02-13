@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.3.0...oxidedock-v0.3.1) (2026-02-13)
+
+
+### Bug Fixes
+
+* align Makefile coverage regex with CI ([5d711f8](https://github.com/fridzema/oxide-dock/commit/5d711f81d8e9c759af79a9397870969b262b71f1))
+* only install Apple Rust targets on macOS release runners ([0aaa664](https://github.com/fridzema/oxide-dock/commit/0aaa66479925b014be343bdf96547561bf7bac83))
+* use dynamic branch name from release-please output ([02e29e1](https://github.com/fridzema/oxide-dock/commit/02e29e1ee301d974f7e2c2b07f0d41255341ba4f))
+
 ## [0.3.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.2.0...oxidedock-v0.3.0) (2026-02-13)
 
 ### Features
