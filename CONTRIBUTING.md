@@ -31,14 +31,34 @@ make setup
    make ci           # Run the full CI pipeline locally
    ```
 
-3. Commit with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/):
+3. Commit with a descriptive message following [Conventional Commits](https://www.conventionalcommits.org/). Commitlint enforces this format automatically via a git hook.
+
+   **Commit types:**
+
+   | Type       | Description                                             |
+   | ---------- | ------------------------------------------------------- |
+   | `feat`     | A new feature                                           |
+   | `fix`      | A bug fix                                               |
+   | `docs`     | Documentation only changes                              |
+   | `style`    | Formatting, missing semicolons, etc. (no logic)         |
+   | `refactor` | Code change that neither fixes a bug nor adds a feature |
+   | `perf`     | Performance improvement                                 |
+   | `test`     | Adding or correcting tests                              |
+   | `build`    | Changes to the build system or dependencies             |
+   | `ci`       | Changes to CI configuration                             |
+   | `chore`    | Other changes that don't modify src or test files       |
+   | `revert`   | Reverts a previous commit                               |
+
+   **Examples:**
 
    ```
-   feat: add new feature
-   fix: resolve specific bug
-   docs: update documentation
-   chore: maintenance task
+   feat: add system tray support
+   fix: resolve crash on window close
+   docs: update installation instructions
+   feat!: redesign plugin API
    ```
+
+   Use `!` after the type or include a `BREAKING CHANGE:` footer for breaking changes.
 
 4. Push and open a pull request against `main`.
 
@@ -68,3 +88,16 @@ Use GitHub Issues. Include:
 - Steps to reproduce
 - Expected vs actual behavior
 - OS, Rust version, Bun version
+
+## Release Process
+
+Releases are fully automated via [release-please](https://github.com/googleapis/release-please):
+
+1. **Conventional commits drive versioning** — commit types determine the version bump:
+   - `fix:` → patch bump (0.1.0 → 0.1.1)
+   - `feat:` → minor bump (0.1.0 → 0.2.0)
+   - `feat!:` or `BREAKING CHANGE:` → major bump (0.1.0 → 1.0.0)
+2. **Release PR** — when conventional commits land on `main`, release-please opens a PR that bumps version files (`package.json`, `Cargo.toml`, `tauri.conf.json`) and updates `CHANGELOG.md`.
+3. **Tag and build** — merging the Release PR creates a git tag (e.g., `v0.2.0`), which triggers the release workflow to build cross-platform binaries and publish a GitHub release.
+
+Check the current release status with `make release-status`.
