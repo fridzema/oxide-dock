@@ -2718,7 +2718,7 @@ dependencies = [
 
 [[package]]
 name = "oxidedock"
-version = "0.3.0"
+version = "0.3.1"
 dependencies = [
  "log",
  "serde",
