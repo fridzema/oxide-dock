@@ -18,6 +18,6 @@ You should receive a response within 48 hours. We will work with you to understa
 
 ## Security Practices
 
-- Dependencies are monitored via `cargo audit` (Rust) and reviewed regularly
+- Dependencies are audited via `cargo audit` in CI (Rust) and reviewed regularly
 - Tauri capabilities follow least-privilege principles
 - Content Security Policy is enabled by default
