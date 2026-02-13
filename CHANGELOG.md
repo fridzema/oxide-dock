@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.2.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.1.0...oxidedock-v0.2.0) (2026-02-13)
+
+
+### Features
+
+* 100% test coverage for Rust and Vue/TS ([8b4c5bf](https://github.com/fridzema/oxide-dock/commit/8b4c5bfb161145c73f956e359fc05a811a897ae8))
+* 100% test coverage for Rust and Vue/TS ([ba9aa04](https://github.com/fridzema/oxide-dock/commit/ba9aa04496cb087ff58352a9acb250eac7509d88))
+
+
+### Bug Fixes
+
+* update release-please workflow to keep Cargo.lock in sync ([3d33fb6](https://github.com/fridzema/oxide-dock/commit/3d33fb62154f16769733ef34b803c693d0ee2f55))
+
 ## [Unreleased]
 
 ### Fixed
