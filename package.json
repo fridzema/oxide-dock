@@ -32,6 +32,8 @@
     "vue-router": "^5.0.2"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.4.1",
+    "@commitlint/config-conventional": "^20.4.1",
     "@eslint/js": "^10.0.1",
     "@playwright/test": "^1.58.2",
     "@tailwindcss/vite": "^4.1.18",

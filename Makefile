@@ -1,6 +1,6 @@
 .PHONY: help dev dev-frontend build build-debug lint lint-fix format format-check \
 	test test-unit test-e2e test-watch rust-lint rust-format rust-audit rust-test \
-	ci setup clean
+	ci setup clean release-status
 
 # Help (default target)
 help:
@@ -29,6 +29,9 @@ help:
 	@echo "  rust-format    Run cargo fmt"
 	@echo "  rust-audit     Run cargo audit"
 	@echo "  rust-test      Run cargo test"
+	@echo ""
+	@echo "Release:"
+	@echo "  release-status Check for open Release PRs"
 	@echo ""
 	@echo "CI & Setup:"
 	@echo "  ci             Run full CI pipeline"
@@ -104,3 +107,11 @@ setup:
 clean:
 	rm -rf node_modules dist
 	cd src-tauri && cargo clean
+
+# Release
+release-status:
+	@echo "Current version: $$(grep '"version"' package.json | head -1 | awk -F'"' '{print $$4}')"
+	@echo ""
+	@gh pr list --label "autorelease: pending" 2>/dev/null || echo "No release PRs found (install gh CLI to check)"
+	@echo ""
+	@echo "Release workflow: push conventional commits to main → release-please creates a Release PR → merge it to tag and release"
