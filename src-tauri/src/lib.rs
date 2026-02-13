@@ -1,4 +1,5 @@
 mod commands;
+mod error;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {

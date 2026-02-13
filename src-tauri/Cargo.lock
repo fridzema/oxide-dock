@@ -2578,6 +2578,7 @@ name = "oxidedock"
 version = "0.2.0"
 dependencies = [
  "serde",
+ "serde_json",
  "tauri",
  "tauri-build",
  "tauri-plugin-clipboard-manager",
@@ -2586,6 +2587,7 @@ dependencies = [
  "tauri-plugin-notification",
  "tauri-plugin-opener",
  "tauri-plugin-os",
+ "thiserror 2.0.18",
 ]
 
 [[package]]
