@@ -60,6 +60,20 @@ describe('commands.greetChecked', () => {
   })
 })
 
+describe('commands.getAppInfo', () => {
+  beforeEach(() => {
+    vi.mocked(invoke).mockReset()
+  })
+
+  it('calls get_app_info with no args', async () => {
+    const mockInfo = { name: 'OxideDock', visit_count: 1 }
+    vi.mocked(invoke).mockResolvedValue(mockInfo)
+    const result = await commands.getAppInfo()
+    expect(invoke).toHaveBeenCalledWith('get_app_info', undefined)
+    expect(result).toEqual(mockInfo)
+  })
+})
+
 describe('AppError type', () => {
   it('has the expected shape', () => {
     const error: AppError = { code: 'FILE_SYSTEM', message: 'not found' }

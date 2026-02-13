@@ -1,5 +1,6 @@
 mod commands;
 mod error;
+mod state;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
@@ -11,9 +12,11 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_os::init())
+        .manage(state::AppState::default())
         .invoke_handler(tauri::generate_handler![
             commands::greet,
-            commands::greet_checked
+            commands::greet_checked,
+            commands::get_app_info
         ])
         .run(tauri::generate_context!())?;
     Ok(())
