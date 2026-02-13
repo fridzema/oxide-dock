@@ -27,7 +27,7 @@ const status = ref<{ message: string; error: boolean } | null>(null)
 
 async function openGitHub() {
   try {
-    await openUrl('https://github.com/nicepkg/oxidedock')
+    await openUrl('https://github.com/fridzema/oxide-dock')
     status.value = { message: 'Opened in browser!', error: false }
   } catch (e) {
     status.value = { message: String(e), error: true }

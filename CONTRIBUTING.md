@@ -11,8 +11,8 @@ Thank you for your interest in contributing! This guide will help you get starte
 ## Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/oxidedock.git
-cd oxidedock
+git clone https://github.com/fridzema/oxide-dock.git
+cd oxide-dock
 make setup
 ```
 

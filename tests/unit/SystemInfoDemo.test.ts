@@ -70,7 +70,7 @@ describe('SystemInfoDemo', () => {
     await ghButton.trigger('click')
     await flushPromises()
 
-    expect(openUrl).toHaveBeenCalledWith('https://github.com/nicepkg/oxidedock')
+    expect(openUrl).toHaveBeenCalledWith('https://github.com/fridzema/oxide-dock')
     expect(wrapper.find('[role="status"]').text()).toBe('Opened in browser!')
     expect(wrapper.find('[role="status"]').classes()).toContain('text-green-500')
   })
