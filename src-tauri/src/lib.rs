@@ -16,7 +16,8 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .invoke_handler(tauri::generate_handler![
             commands::greet,
             commands::greet_checked,
-            commands::get_app_info
+            commands::get_app_info,
+            commands::read_text_file
         ])
         .run(tauri::generate_context!())?;
     Ok(())

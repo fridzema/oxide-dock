@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { open } from '@tauri-apps/plugin-dialog'
-import { readTextFile } from '@tauri-apps/plugin-fs'
+import { commands } from '../shared/ipc'
+import type { ReadFileResult, AppError } from '../shared/ipc'
 
-const filePath = ref<string | null>(null)
-const fileContent = ref<string | null>(null)
+const MAX_DISPLAY_BYTES = 10240
+
+const fileResult = ref<ReadFileResult | null>(null)
+const truncated = ref(false)
 const status = ref<{ message: string; error: boolean } | null>(null)
 
 async function openFile() {
@@ -32,17 +35,27 @@ async function openFile() {
     })
     if (!selected) return
 
-    filePath.value = selected
-    const content = await readTextFile(selected)
-    if (content.length > 500) {
-      fileContent.value = content.slice(0, 500) + '\n… (truncated)'
+    const result = await commands.readTextFile(selected)
+    if (result.content.length > MAX_DISPLAY_BYTES) {
+      result.content = result.content.slice(0, MAX_DISPLAY_BYTES)
+      truncated.value = true
     } else {
-      fileContent.value = content
+      truncated.value = false
     }
+    fileResult.value = result
     status.value = { message: 'File opened!', error: false }
   } catch (e) {
-    status.value = { message: String(e), error: true }
+    const appError = e as AppError
+    status.value = {
+      message: appError.message || String(e),
+      error: true,
+    }
   }
+}
+
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  return `${(bytes / 1024).toFixed(1)} KB`
 }
 </script>
 
@@ -74,15 +87,21 @@ async function openFile() {
     >
       Open File
     </button>
-    <div v-if="filePath" class="flex flex-col gap-1">
+    <div v-if="fileResult" class="flex flex-col gap-1">
       <p class="text-xs text-gray-500 dark:text-gray-400">
-        Path: <span class="font-mono">{{ filePath }}</span>
+        Path: <span class="font-mono">{{ fileResult.path }}</span>
+      </p>
+      <p class="text-xs text-gray-500 dark:text-gray-400">
+        Size: {{ formatBytes(fileResult.size_bytes) }}
       </p>
       <pre
-        v-if="fileContent"
+        v-if="fileResult.content"
         class="max-h-32 overflow-auto rounded-lg bg-gray-50 p-2 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400"
-        >{{ fileContent }}</pre
+        >{{ fileResult.content }}</pre
       >
+      <p v-if="truncated" class="text-xs text-amber-500">
+        Content truncated (showing first {{ formatBytes(MAX_DISPLAY_BYTES) }})
+      </p>
     </div>
     <p
       v-if="status"

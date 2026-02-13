@@ -74,6 +74,26 @@ describe('commands.getAppInfo', () => {
   })
 })
 
+describe('commands.readTextFile', () => {
+  beforeEach(() => {
+    vi.mocked(invoke).mockReset()
+  })
+
+  it('calls read_text_file with path', async () => {
+    const mockResult = { path: '/test.txt', content: 'hello', size_bytes: 5 }
+    vi.mocked(invoke).mockResolvedValue(mockResult)
+    const result = await commands.readTextFile('/test.txt')
+    expect(invoke).toHaveBeenCalledWith('read_text_file', { path: '/test.txt' })
+    expect(result).toEqual(mockResult)
+  })
+
+  it('rejects with FILE_SYSTEM error for missing files', async () => {
+    const error: AppError = { code: 'FILE_SYSTEM', message: 'not found' }
+    vi.mocked(invoke).mockRejectedValue(error)
+    await expect(commands.readTextFile('/missing.txt')).rejects.toEqual(error)
+  })
+})
+
 describe('AppError type', () => {
   it('has the expected shape', () => {
     const error: AppError = { code: 'FILE_SYSTEM', message: 'not found' }

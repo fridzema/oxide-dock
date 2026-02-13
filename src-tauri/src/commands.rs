@@ -38,6 +38,26 @@ pub fn get_app_info(state: tauri::State<'_, AppState>) -> AppResult<AppInfo> {
     })
 }
 
+#[derive(Debug, Serialize)]
+pub struct ReadFileResult {
+    pub path: String,
+    pub content: String,
+    pub size_bytes: usize,
+}
+
+#[tauri::command]
+pub fn read_text_file(path: String) -> AppResult<ReadFileResult> {
+    info!("read_text_file called with path={}", path);
+    let content = std::fs::read_to_string(&path)
+        .map_err(|e| AppError::FileSystem(format!("Failed to read {}: {}", path, e)))?;
+    let size_bytes = content.len();
+    Ok(ReadFileResult {
+        path,
+        content,
+        size_bytes,
+    })
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -89,5 +109,43 @@ mod tests {
         let json = serde_json::to_value(&info).unwrap();
         assert_eq!(json["name"], "Test");
         assert_eq!(json["visit_count"], 42);
+    }
+
+    #[test]
+    fn test_read_file_result_serialization() {
+        let result = ReadFileResult {
+            path: "/test/file.txt".to_string(),
+            content: "hello".to_string(),
+            size_bytes: 5,
+        };
+        let json = serde_json::to_value(&result).unwrap();
+        assert_eq!(json["path"], "/test/file.txt");
+        assert_eq!(json["content"], "hello");
+        assert_eq!(json["size_bytes"], 5);
+    }
+
+    #[test]
+    fn test_read_text_file_nonexistent() {
+        let result = read_text_file("/nonexistent/path/file.txt".to_string());
+        assert!(result.is_err());
+        let err = result.unwrap_err();
+        assert!(matches!(err, AppError::FileSystem(_)));
+    }
+
+    #[test]
+    fn test_read_text_file_real_file() {
+        use std::io::Write;
+        let dir = std::env::temp_dir();
+        let file_path = dir.join("oxidedock_test_read.txt");
+        let mut file = std::fs::File::create(&file_path).unwrap();
+        write!(file, "test content").unwrap();
+
+        let result = read_text_file(file_path.to_string_lossy().to_string());
+        assert!(result.is_ok());
+        let res = result.unwrap();
+        assert_eq!(res.content, "test content");
+        assert_eq!(res.size_bytes, 12);
+
+        std::fs::remove_file(file_path).unwrap();
     }
 }
