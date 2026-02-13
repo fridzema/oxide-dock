@@ -13,6 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: googleapis/release-please-action@v4
+        id: release
         with:
           config-file: .github/release-please-config.json
           manifest-file: .github/.release-please-manifest.json
+
+      - uses: actions/checkout@v4
+        if: steps.release.outputs.pr
+        with:
+          ref: release-please--branches--main--components--oxidedock
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Cargo.lock
+        if: steps.release.outputs.pr
+        run: |
+          cd src-tauri
+          cargo generate-lockfile
+          if git diff --quiet Cargo.lock; then
+            echo "Cargo.lock already up to date"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add Cargo.lock
+            git commit -m "chore: update Cargo.lock"
+            git push
+          fi
