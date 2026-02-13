@@ -1,12 +1,26 @@
 # OxideDock
 
+[![CI](https://github.com/fridzema/oxide-dock/actions/workflows/ci.yml/badge.svg)](https://github.com/fridzema/oxide-dock/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/github/license/fridzema/oxide-dock)](LICENSE)
+[![GitHub stars](https://img.shields.io/github/stars/fridzema/oxide-dock)](https://github.com/fridzema/oxide-dock/stargazers)
+[![Release](https://img.shields.io/github/v/release/fridzema/oxide-dock?include_prereleases)](https://github.com/fridzema/oxide-dock/releases)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 Raw speed, refined desktop.
 
-OxideDock is a Rust + Vue desktop foundation that turns native performance into polished, ship-ready apps.
+OxideDock is a Rust + Vue 3 desktop starter built on Tauri v2 — native performance, polished DX, ship-ready apps.
 
 <p align="center">
   <img src=".art/screens/screen.png" alt="OxideDock screenshot" width="700" />
 </p>
+
+## Why OxideDock?
+
+Starting a Tauri app from scratch means wiring up routing, state management, testing, linting, CI/CD, and release pipelines yourself. OxideDock gives you all of that out of the box so you can skip the boilerplate and start building your app from day one.
+
+- **Production-ready defaults** — linting, formatting, testing, and CI all preconfigured
+- **Cross-platform releases** — push a tag and get Linux, macOS, and Windows binaries
+- **One command** — `make dev` and you're running
 
 ## Features
 
@@ -143,10 +157,6 @@ oxidedock/
 | Oxlint       | latest  | Fast supplemental linting |
 | Lefthook     | latest  | Git hooks                 |
 
-## Branding
-
-- See `.art/branding.md` for brand tokens, tagline variants, and logo/icon prompts.
-
 ## CI/CD
 
 ### CI Pipeline (`ci.yml`)
@@ -210,6 +220,12 @@ Follow the [Tauri code signing guide](https://v2.tauri.app/distribute/sign/) to 
 4. Run `make ci` to verify everything passes
 5. Commit with a descriptive message
 6. Push and open a pull request
+
+## Contributors
+
+<a href="https://github.com/fridzema/oxide-dock/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=fridzema/oxide-dock" />
+</a>
 
 ## License
 
