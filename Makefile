@@ -1,6 +1,6 @@
 .PHONY: help dev dev-frontend build build-debug lint lint-fix format format-check \
 	test test-unit test-e2e test-watch rust-lint rust-format rust-audit rust-test \
-	ci setup clean release-status
+	rust-coverage coverage ci setup clean release-status
 
 # Help (default target)
 help:
@@ -29,6 +29,8 @@ help:
 	@echo "  rust-format    Run cargo fmt"
 	@echo "  rust-audit     Run cargo audit"
 	@echo "  rust-test      Run cargo test"
+	@echo "  rust-coverage  Run Rust tests with coverage"
+	@echo "  coverage       Run all coverage (Rust + Vue)"
 	@echo ""
 	@echo "Release:"
 	@echo "  release-status Check for open Release PRs"
@@ -94,8 +96,15 @@ rust-audit:
 rust-test:
 	cd src-tauri && cargo test
 
+rust-coverage:
+	@command -v cargo-llvm-cov >/dev/null 2>&1 || { echo "cargo-llvm-cov not installed. Run: cargo install cargo-llvm-cov"; exit 1; }
+	cd src-tauri && cargo llvm-cov --fail-under-lines 100 --ignore-filename-regex '(main|lib)\.rs'
+
+coverage: rust-coverage
+	bun run test:unit:coverage
+
 # CI
-ci: lint format-check test-unit rust-test build
+ci: lint format-check test-unit rust-coverage build
 
 # Setup
 setup:

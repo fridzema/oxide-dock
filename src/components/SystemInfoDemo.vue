@@ -71,6 +71,7 @@ async function openGitHub() {
     </button>
     <p
       v-if="status"
+      role="status"
       class="text-xs"
       :class="status.error ? 'text-red-500' : 'text-green-500 dark:text-green-400'"
     >

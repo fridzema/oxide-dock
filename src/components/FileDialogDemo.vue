@@ -39,7 +39,7 @@ async function openFile() {
     } else {
       fileContent.value = content
     }
-    status.value = null
+    status.value = { message: 'File opened!', error: false }
   } catch (e) {
     status.value = { message: String(e), error: true }
   }
