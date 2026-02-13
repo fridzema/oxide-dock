@@ -1,0 +1,7 @@
+{
+  "rules": {
+    "no-console": "warn",
+    "no-debugger": "warn"
+  },
+  "ignorePatterns": ["dist/", "src-tauri/target/", "node_modules/"]
+}

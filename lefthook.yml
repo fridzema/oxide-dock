@@ -1,0 +1,18 @@
+pre-commit:
+  parallel: true
+  commands:
+    eslint:
+      glob: '*.{js,ts,vue}'
+      run: bunx eslint {staged_files}
+    oxlint:
+      glob: '*.{js,ts,vue}'
+      run: bunx oxlint {staged_files}
+    prettier:
+      glob: '*.{js,ts,vue,css,json,md,yml,yaml}'
+      run: bunx prettier --check {staged_files}
+    clippy:
+      glob: '*.rs'
+      run: cd src-tauri && cargo clippy -- -D warnings
+    rustfmt:
+      glob: '*.rs'
+      run: cd src-tauri && cargo fmt -- --check
