@@ -95,18 +95,6 @@ jobs:
       - name: Playwright
         run: bunx playwright test --project=chromium
 
-  cargo-audit:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: dtolnay/rust-toolchain@stable
-
-      - uses: taiki-e/install-action@cargo-audit
-
-      - name: Cargo audit
-        run: cd src-tauri && cargo audit
-
   rust-lint:
     runs-on: ubuntu-22.04
     steps:
