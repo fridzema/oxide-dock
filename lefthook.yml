@@ -1,3 +1,8 @@
+commit-msg:
+  commands:
+    commitlint:
+      run: bunx commitlint --edit {1}
+
 pre-commit:
   parallel: true
   commands:
