@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Escape special characters for use in sed replacement strings
 sed_escape() {
-  printf '%s' "$1" | sed 's/[\/&\\]/\\&/g'
+  printf '%s' "$1" | sed 's/[\/&\\.^$*[]/\\&/g'
 }
 
 echo "OxideDock Bootstrap — Rename your project"
@@ -50,6 +50,26 @@ sed -i.bak "s/^# OxideDock$/# $SAFE_APP_NAME/" README.md
 
 # CONTRIBUTING heading
 sed -i.bak "s/^# Contributing to OxideDock$/# Contributing to $SAFE_APP_NAME/" CONTRIBUTING.md
+
+# state.rs — default app name
+sed -i.bak "s/\"OxideDock\"/\"$SAFE_APP_NAME\"/" src-tauri/src/state.rs
+
+# DefaultLayout.vue — nav brand
+sed -i.bak "s/alt=\"OxideDock\"/alt=\"$SAFE_APP_NAME\"/" src/layouts/DefaultLayout.vue
+sed -i.bak "s/>OxideDock</>$SAFE_APP_NAME</" src/layouts/DefaultLayout.vue
+
+# HomePage.vue — hero heading and description
+sed -i.bak "s/>OxideDock</>$SAFE_APP_NAME</" src/pages/HomePage.vue
+sed -i.bak "s/OxideDock is powered/$SAFE_APP_NAME is powered/" src/pages/HomePage.vue
+
+# AboutPage.vue — about heading
+sed -i.bak "s/About OxideDock/About $SAFE_APP_NAME/" src/pages/AboutPage.vue
+
+# commands.rs — test assertions
+sed -i.bak "s/\"OxideDock\"/\"$SAFE_APP_NAME\"/g" src-tauri/src/commands.rs
+
+# release.yml — release name
+sed -i.bak "s/OxideDock/$SAFE_APP_NAME/" .github/workflows/release.yml
 
 # Clean up .bak files
 find . -name "*.bak" -delete

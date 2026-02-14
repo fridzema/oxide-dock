@@ -1,6 +1,6 @@
 .PHONY: help dev dev-frontend build build-debug lint lint-fix format format-check \
 	test test-unit test-e2e test-watch rust-lint rust-format rust-audit rust-test \
-	rust-coverage coverage ci setup clean release-status
+	rust-coverage coverage ci check setup bootstrap clean release-status
 
 # Help (default target)
 help:
@@ -30,14 +30,18 @@ help:
 	@echo "  rust-audit     Run cargo audit"
 	@echo "  rust-test      Run cargo test"
 	@echo "  rust-coverage  Run Rust tests with coverage"
-	@echo "  coverage       Run all coverage (Rust + Vue)"
 	@echo ""
 	@echo "Release:"
 	@echo "  release-status Check for open Release PRs"
 	@echo ""
-	@echo "CI & Setup:"
+	@echo "Setup & Bootstrap:"
+	@echo "  check          Verify prerequisites are installed"
+	@echo "  setup          Install dependencies (runs check first)"
+	@echo "  bootstrap      Rename project via scripts/bootstrap.sh"
+	@echo ""
+	@echo "CI & Cleanup:"
 	@echo "  ci             Run full CI pipeline"
-	@echo "  setup          Install dependencies"
+	@echo "  coverage       Run all coverage (Rust + Vue)"
 	@echo "  clean          Remove build artifacts"
 
 # Development
@@ -103,15 +107,46 @@ rust-coverage:
 coverage: rust-coverage
 	bun run test:unit:coverage
 
-# CI
+# Runs targets sequentially (stops at first failure). GitHub CI runs in parallel.
+# If you want all failures at once, run individual targets separately.
 ci: lint format-check test-unit test-e2e rust-test rust-coverage build
 
-# Setup
-setup:
+# Setup & Bootstrap
+check:
+	@echo "Checking prerequisites..."
+	@echo ""
+	@command -v rustc >/dev/null 2>&1 \
+		&& echo "  rustc: $$(rustc --version)" \
+		|| { echo "  rustc: NOT FOUND — install from https://www.rust-lang.org/tools/install"; exit 1; }
+	@command -v cargo >/dev/null 2>&1 \
+		&& echo "  cargo: $$(cargo --version)" \
+		|| { echo "  cargo: NOT FOUND — install from https://www.rust-lang.org/tools/install"; exit 1; }
+	@command -v bun >/dev/null 2>&1 \
+		&& echo "  bun:   $$(bun --version)" \
+		|| { echo "  bun:   NOT FOUND — install from https://bun.sh"; exit 1; }
+	@echo ""
+	@echo "Optional tools:"
+	@command -v cargo-audit >/dev/null 2>&1 \
+		&& echo "  cargo-audit:    installed" \
+		|| echo "  cargo-audit:    not installed (cargo install cargo-audit)"
+	@command -v cargo-llvm-cov >/dev/null 2>&1 \
+		&& echo "  cargo-llvm-cov: installed" \
+		|| echo "  cargo-llvm-cov: not installed (cargo install cargo-llvm-cov)"
+	@echo ""
+	@echo "All prerequisites satisfied."
+
+setup: check
 	bun install
 	bunx playwright install --with-deps chromium firefox webkit
 	bunx lefthook install
-	@echo "Optional: cargo install cargo-audit (for make rust-audit)"
+	@test -f .env || { cp .env.example .env && echo "Created .env from .env.example"; }
+	@echo ""
+	@echo "Optional: cargo install cargo-audit    (for make rust-audit)"
+	@echo "Optional: cargo install cargo-llvm-cov (for make rust-coverage)"
+
+bootstrap:
+	@test -f scripts/bootstrap.sh || { echo "scripts/bootstrap.sh not found"; exit 1; }
+	bash scripts/bootstrap.sh
 
 clean:
 	rm -rf node_modules dist

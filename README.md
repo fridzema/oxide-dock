@@ -56,8 +56,14 @@ Starting a Tauri app from scratch means wiring up routing, state management, tes
 git clone https://github.com/fridzema/oxide-dock.git
 cd oxide-dock
 
+# Verify prerequisites (Rust, Bun)
+make check
+
 # Install dependencies
 make setup
+
+# (Optional) Rename the project to your own app
+make bootstrap
 
 # Start development
 make dev
@@ -130,13 +136,16 @@ oxidedock/
 | `make rust-audit`  | Check for vulnerabilities |
 | `make rust-test`   | Run Rust tests            |
 
-### CI & Setup
+### CI, Setup & Bootstrap
 
-| Command      | Description                  |
-| ------------ | ---------------------------- |
-| `make ci`    | Run full CI pipeline locally |
-| `make setup` | Install all dependencies     |
-| `make clean` | Remove build artifacts       |
+| Command          | Description                        |
+| ---------------- | ---------------------------------- |
+| `make check`     | Verify prerequisites are installed |
+| `make setup`     | Install all dependencies           |
+| `make bootstrap` | Rename project to your own app     |
+| `make ci`        | Run full CI pipeline locally       |
+| `make coverage`  | Run all coverage (Rust + Vue)      |
+| `make clean`     | Remove build artifacts             |
 
 ## Tech Stack
 

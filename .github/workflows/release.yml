@@ -3,10 +3,15 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
+      # Stable releases only — pre-release tags (e.g. v1.0.0-beta.1) intentionally excluded
+      - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:
   contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
 
 jobs:
   release:
@@ -24,12 +29,13 @@ jobs:
             args: ''
 
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
       - uses: oven-sh/setup-bun@v2
 
-      - uses: actions/cache@v4
+      - uses: actions/cache@v5
         with:
           path: |
             ~/.bun/install/cache

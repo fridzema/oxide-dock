@@ -1,41 +1,8 @@
 # Recommended Tauri Plugins
 
+> **Note:** `tauri-plugin-log` is already included in this template. See `src-tauri/src/lib.rs` for configuration.
+
 These plugins are not included by default to keep the template lean, but are recommended for production apps.
-
-## tauri-plugin-log — Structured Logging
-
-Adds file and console logging for the Rust backend.
-
-**Install:**
-
-```bash
-# Rust
-cd src-tauri && cargo add tauri-plugin-log
-
-# No frontend package needed — logs are Rust-side
-```
-
-**Setup in `src-tauri/src/lib.rs`:**
-
-```rust
-use tauri_plugin_log::{Target, TargetKind};
-
-tauri::Builder::default()
-    .plugin(tauri_plugin_log::Builder::new()
-        .targets([
-            Target::new(TargetKind::Stdout),
-            Target::new(TargetKind::LogDir { file_name: None }),
-        ])
-        .build())
-    // ... other plugins
-```
-
-**Usage:**
-
-```rust
-log::info!("Application started");
-log::error!("Something went wrong: {}", err);
-```
 
 ## tauri-plugin-window-state — Window Persistence
 

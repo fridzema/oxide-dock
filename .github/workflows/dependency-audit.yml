@@ -1,0 +1,27 @@
+name: Dependency Audit
+
+on:
+  schedule:
+    - cron: '0 6 * * *'
+  push:
+    branches: [main]
+    paths:
+      - 'bun.lock'
+      - 'package.json'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'bun.lock'
+      - 'package.json'
+
+jobs:
+  npm-audit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: oven-sh/setup-bun@v2
+
+      - name: Audit frontend dependencies
+        run: bun audit

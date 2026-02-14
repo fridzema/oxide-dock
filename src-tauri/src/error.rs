@@ -6,9 +6,6 @@ pub enum AppError {
     #[error("Validation failed: {0}")]
     Validation(String),
 
-    #[error("File operation failed: {0}")]
-    FileSystem(String),
-
     #[error("Internal error: {0}")]
     Internal(String),
 }
@@ -21,7 +18,6 @@ impl Serialize for AppError {
         use serde::ser::SerializeStruct;
         let (code, message) = match self {
             AppError::Validation(msg) => ("VALIDATION", msg.as_str()),
-            AppError::FileSystem(msg) => ("FILE_SYSTEM", msg.as_str()),
             AppError::Internal(msg) => ("INTERNAL", msg.as_str()),
         };
         let mut s = serializer.serialize_struct("AppError", 2)?;
@@ -46,14 +42,6 @@ mod tests {
     }
 
     #[test]
-    fn test_filesystem_error_serializes_to_json() {
-        let err = AppError::FileSystem("File not found".to_string());
-        let json = serde_json::to_value(&err).unwrap();
-        assert_eq!(json["code"], "FILE_SYSTEM");
-        assert_eq!(json["message"], "File not found");
-    }
-
-    #[test]
     fn test_internal_error_serializes_to_json() {
         let err = AppError::Internal("Unexpected failure".to_string());
         let json = serde_json::to_value(&err).unwrap();
@@ -65,12 +53,6 @@ mod tests {
     fn test_validation_error_display() {
         let err = AppError::Validation("bad input".to_string());
         assert_eq!(format!("{err}"), "Validation failed: bad input");
-    }
-
-    #[test]
-    fn test_filesystem_error_display() {
-        let err = AppError::FileSystem("permission denied".to_string());
-        assert_eq!(format!("{err}"), "File operation failed: permission denied");
     }
 
     #[test]

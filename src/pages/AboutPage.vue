@@ -1,4 +1,17 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import { getVersion } from '@tauri-apps/api/app'
+
+const appVersion = ref('')
+
+onMounted(async () => {
+  try {
+    appVersion.value = await getVersion()
+  } catch {
+    appVersion.value = 'unknown'
+  }
+})
+
 const techStack = [
   { name: 'Tauri', version: 'v2', url: 'https://v2.tauri.app/', description: 'Desktop runtime' },
   { name: 'Vue', version: 'v3', url: 'https://vuejs.org/', description: 'Frontend framework' },
@@ -33,7 +46,7 @@ const techStack = [
         A desktop application foundation built with Tauri v2, Vue 3, and Vite. Use it as a starting
         point for cross-platform desktop apps with native performance.
       </p>
-      <p class="font-mono text-sm text-gray-400 dark:text-gray-500">v0.1.0</p>
+      <p class="font-mono text-sm text-gray-400 dark:text-gray-500">v{{ appVersion }}</p>
     </section>
 
     <section class="w-full">

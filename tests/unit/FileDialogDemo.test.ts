@@ -2,22 +2,20 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import FileDialogDemo from '../../src/components/FileDialogDemo.vue'
 import { open } from '@tauri-apps/plugin-dialog'
-import { commands } from '../../src/shared/ipc'
+import { readTextFile } from '@tauri-apps/plugin-fs'
 
 vi.mock('@tauri-apps/plugin-dialog', () => ({
   open: vi.fn(),
 }))
 
-vi.mock('../../src/shared/ipc', () => ({
-  commands: {
-    readTextFile: vi.fn(),
-  },
+vi.mock('@tauri-apps/plugin-fs', () => ({
+  readTextFile: vi.fn(),
 }))
 
 describe('FileDialogDemo', () => {
   beforeEach(() => {
     vi.mocked(open).mockReset()
-    vi.mocked(commands.readTextFile).mockReset()
+    vi.mocked(readTextFile).mockReset()
   })
 
   it('renders title and description', () => {
@@ -39,11 +37,7 @@ describe('FileDialogDemo', () => {
 
   it('opens file and shows content with metadata', async () => {
     vi.mocked(open).mockResolvedValue('/path/to/file.txt')
-    vi.mocked(commands.readTextFile).mockResolvedValue({
-      path: '/path/to/file.txt',
-      content: 'Hello world',
-      size_bytes: 11,
-    })
+    vi.mocked(readTextFile).mockResolvedValue('Hello world')
     const wrapper = mount(FileDialogDemo)
 
     await wrapper.find('button').trigger('click')
@@ -60,11 +54,7 @@ describe('FileDialogDemo', () => {
   it('truncates content longer than 10KB', async () => {
     const longContent = 'x'.repeat(20000)
     vi.mocked(open).mockResolvedValue('/path/to/big.txt')
-    vi.mocked(commands.readTextFile).mockResolvedValue({
-      path: '/path/to/big.txt',
-      content: longContent,
-      size_bytes: 20000,
-    })
+    vi.mocked(readTextFile).mockResolvedValue(longContent)
     const wrapper = mount(FileDialogDemo)
 
     await wrapper.find('button').trigger('click')
@@ -75,11 +65,7 @@ describe('FileDialogDemo', () => {
 
   it('shows path but no content for empty file', async () => {
     vi.mocked(open).mockResolvedValue('/path/to/empty.txt')
-    vi.mocked(commands.readTextFile).mockResolvedValue({
-      path: '/path/to/empty.txt',
-      content: '',
-      size_bytes: 0,
-    })
+    vi.mocked(readTextFile).mockResolvedValue('')
     const wrapper = mount(FileDialogDemo)
 
     await wrapper.find('button').trigger('click')
@@ -97,16 +83,13 @@ describe('FileDialogDemo', () => {
     await wrapper.find('button').trigger('click')
     await flushPromises()
 
-    expect(commands.readTextFile).not.toHaveBeenCalled()
+    expect(readTextFile).not.toHaveBeenCalled()
     expect(wrapper.text()).not.toContain('Path:')
   })
 
-  it('shows error when command throws', async () => {
+  it('shows error when readTextFile throws', async () => {
     vi.mocked(open).mockResolvedValue('/path/to/file.txt')
-    vi.mocked(commands.readTextFile).mockRejectedValue({
-      code: 'FILE_SYSTEM',
-      message: 'Permission denied',
-    })
+    vi.mocked(readTextFile).mockRejectedValue(new Error('Permission denied'))
     const wrapper = mount(FileDialogDemo)
 
     await wrapper.find('button').trigger('click')
@@ -125,9 +108,9 @@ describe('FileDialogDemo', () => {
     expect(wrapper.text()).toContain('Dialog failed')
   })
 
-  it('falls back to String(e) when error has no message', async () => {
+  it('falls back to String(e) when error has no message property', async () => {
     vi.mocked(open).mockResolvedValue('/path/to/file.txt')
-    vi.mocked(commands.readTextFile).mockRejectedValue('raw string error')
+    vi.mocked(readTextFile).mockRejectedValue('raw string error')
     const wrapper = mount(FileDialogDemo)
 
     await wrapper.find('button').trigger('click')

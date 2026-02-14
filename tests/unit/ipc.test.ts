@@ -14,14 +14,14 @@ describe('invokeCommand', () => {
 
   it('forwards to tauri invoke with correct args', async () => {
     vi.mocked(invoke).mockResolvedValue('result')
-    const result = await invokeCommand<string>('test_cmd', { key: 'value' })
-    expect(invoke).toHaveBeenCalledWith('test_cmd', { key: 'value' })
+    const result = await invokeCommand<string>('greet', { key: 'value' })
+    expect(invoke).toHaveBeenCalledWith('greet', { key: 'value' })
     expect(result).toBe('result')
   })
 
   it('propagates errors from invoke', async () => {
     vi.mocked(invoke).mockRejectedValue({ code: 'VALIDATION', message: 'bad input' })
-    await expect(invokeCommand<string>('test_cmd')).rejects.toEqual({
+    await expect(invokeCommand<string>('greet')).rejects.toEqual({
       code: 'VALIDATION',
       message: 'bad input',
     })
@@ -74,30 +74,10 @@ describe('commands.getAppInfo', () => {
   })
 })
 
-describe('commands.readTextFile', () => {
-  beforeEach(() => {
-    vi.mocked(invoke).mockReset()
-  })
-
-  it('calls read_text_file with path', async () => {
-    const mockResult = { path: '/test.txt', content: 'hello', size_bytes: 5 }
-    vi.mocked(invoke).mockResolvedValue(mockResult)
-    const result = await commands.readTextFile('/test.txt')
-    expect(invoke).toHaveBeenCalledWith('read_text_file', { path: '/test.txt' })
-    expect(result).toEqual(mockResult)
-  })
-
-  it('rejects with FILE_SYSTEM error for missing files', async () => {
-    const error: AppError = { code: 'FILE_SYSTEM', message: 'not found' }
-    vi.mocked(invoke).mockRejectedValue(error)
-    await expect(commands.readTextFile('/missing.txt')).rejects.toEqual(error)
-  })
-})
-
 describe('AppError type', () => {
   it('has the expected shape', () => {
-    const error: AppError = { code: 'FILE_SYSTEM', message: 'not found' }
-    expect(error.code).toBe('FILE_SYSTEM')
+    const error: AppError = { code: 'VALIDATION', message: 'not found' }
+    expect(error.code).toBe('VALIDATION')
     expect(error.message).toBe('not found')
   })
 })
