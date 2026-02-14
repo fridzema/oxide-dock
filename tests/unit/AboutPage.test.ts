@@ -1,5 +1,6 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
+import { getVersion } from '@tauri-apps/api/app'
 import AboutPage from '../../src/pages/AboutPage.vue'
 
 vi.mock('@tauri-apps/api/app', () => ({
@@ -7,6 +8,9 @@ vi.mock('@tauri-apps/api/app', () => ({
 }))
 
 describe('AboutPage', () => {
+  beforeEach(() => {
+    vi.mocked(getVersion).mockResolvedValue('1.2.3')
+  })
   it('renders title and description', async () => {
     const wrapper = mount(AboutPage)
     await flushPromises()
@@ -38,7 +42,6 @@ describe('AboutPage', () => {
   })
 
   it('shows unknown version when getVersion fails', async () => {
-    const { getVersion } = await import('@tauri-apps/api/app')
     vi.mocked(getVersion).mockRejectedValueOnce(new Error('not available'))
     const wrapper = mount(AboutPage)
     await flushPromises()

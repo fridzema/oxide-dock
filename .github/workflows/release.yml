@@ -3,6 +3,7 @@ name: Release
 on:
   push:
     tags:
+      # Stable releases only — pre-release tags (e.g. v1.0.0-beta.1) intentionally excluded
       - 'v[0-9]+.[0-9]+.[0-9]+'
 
 permissions:

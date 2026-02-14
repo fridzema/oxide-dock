@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Escape special characters for use in sed replacement strings
 sed_escape() {
-  printf '%s' "$1" | sed 's/[\/&\\]/\\&/g'
+  printf '%s' "$1" | sed 's/[\/&\\.^$*[]/\\&/g'
 }
 
 echo "OxideDock Bootstrap — Rename your project"
