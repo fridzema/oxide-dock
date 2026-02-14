@@ -14,7 +14,7 @@ You should receive a response within 48 hours. We will work with you to understa
 
 | Version | Supported |
 | ------- | --------- |
-| 0.1.x   | Yes       |
+| 0.x     | Yes       |
 
 ## Security Practices
 
