@@ -29,6 +29,9 @@ jobs:
           ref: ${{ fromJSON(steps.release.outputs.pr).headBranchName }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
+      - uses: dtolnay/rust-toolchain@stable
+        if: steps.release.outputs.pr
+
       - name: Update Cargo.lock
         if: steps.release.outputs.pr
         run: |
