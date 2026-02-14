@@ -1,0 +1,19 @@
+name: Setup Bun
+description: Install Bun, cache dependencies, and install packages
+
+runs:
+  using: composite
+  steps:
+    - uses: oven-sh/setup-bun@v2
+
+    - uses: actions/cache@v4
+      with:
+        path: |
+          ~/.bun/install/cache
+          node_modules
+        key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
+        restore-keys: |
+          bun-${{ runner.os }}-
+
+    - run: bun install --frozen-lockfile
+      shell: bash

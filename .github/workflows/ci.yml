@@ -13,111 +13,72 @@ concurrency:
 jobs:
   lint:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: |
-            bun-${{ runner.os }}-
-
-      - run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup-bun
 
       - name: ESLint
         run: bunx eslint .
-
       - name: Oxlint
         run: bunx oxlint .
-
       - name: Prettier
         run: bunx prettier --check .
+      - name: Type check
+        run: bunx vue-tsc --noEmit
 
   test-unit:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: |
-            bun-${{ runner.os }}-
-
-      - run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup-bun
 
       - name: Vitest with coverage
+        if: github.event_name == 'push'
         run: bun run test:unit:coverage
+      - name: Vitest
+        if: github.event_name == 'pull_request'
+        run: bun run test:unit
 
   test-e2e:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-
-      - uses: actions/cache@v4
-        with:
-          path: |
-            ~/.bun/install/cache
-            node_modules
-          key: bun-${{ runner.os }}-${{ hashFiles('bun.lock') }}
-          restore-keys: |
-            bun-${{ runner.os }}-
-
-      - run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup-bun
 
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(bun pm ls @playwright/test | grep @playwright/test | awk '{print $2}')" >> "$GITHUB_OUTPUT"
-
       - uses: actions/cache@v4
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
           key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
-
-      # CI runs chromium only for speed; local `make test-e2e` uses all browsers from playwright.config.ts
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: bunx playwright install --with-deps chromium
-
       - name: Playwright
         run: bunx playwright test --project=chromium
 
   rust-lint:
     runs-on: ubuntu-22.04
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
-
       - uses: dtolnay/rust-toolchain@stable
-
       - uses: swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-
       - name: Install Linux dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - run: bun install --frozen-lockfile
-
       - name: Clippy
         run: cd src-tauri && cargo clippy -- -D warnings
-
       - name: Rustfmt
         run: cd src-tauri && cargo fmt -- --check
 
@@ -129,62 +90,41 @@ jobs:
           - platform: ubuntu-22.04
           - platform: macos-latest
           - platform: windows-latest
-
     runs-on: ${{ matrix.platform }}
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
 
-      - uses: oven-sh/setup-bun@v2
-
       - uses: dtolnay/rust-toolchain@stable
         with:
-          components: llvm-tools-preview
-
+          components: ${{ matrix.platform == 'ubuntu-22.04' && 'llvm-tools-preview' || '' }}
       - uses: swatinem/rust-cache@v2
         with:
           workspaces: src-tauri
-
       - name: Install Linux dependencies
         if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
           sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
 
-      - run: bun install --frozen-lockfile
-
       - name: Install cargo-llvm-cov
-        if: matrix.platform == 'ubuntu-22.04'
+        if: matrix.platform == 'ubuntu-22.04' && github.event_name == 'push'
         uses: taiki-e/install-action@cargo-llvm-cov
-
       - name: Rust tests with coverage
-        if: matrix.platform == 'ubuntu-22.04'
+        if: matrix.platform == 'ubuntu-22.04' && github.event_name == 'push'
         run: cd src-tauri && cargo llvm-cov --fail-under-lines 100 --ignore-filename-regex '(main|lib|handlers)\.rs'
-
       - name: Rust tests
-        if: matrix.platform != 'ubuntu-22.04'
+        if: matrix.platform != 'ubuntu-22.04' || github.event_name == 'pull_request'
         run: cd src-tauri && cargo test
 
   build:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: [lint, test-unit, test-e2e, rust-lint, rust-test]
     runs-on: ubuntu-22.04
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
-
-      - uses: oven-sh/setup-bun@v2
-
-      - uses: dtolnay/rust-toolchain@stable
-
-      - uses: swatinem/rust-cache@v2
-        with:
-          workspaces: src-tauri
-
-      - name: Install Linux dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-
-      - run: bun install --frozen-lockfile
+      - uses: ./.github/actions/setup-tauri
 
       - name: Build
         run: bun tauri build
