@@ -5,6 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.3.1...oxidedock-v0.4.0) (2026-02-14)
+
+
+### Features
+
+* add make check and bootstrap targets for improved developer onboarding ([e618c82](https://github.com/fridzema/oxide-dock/commit/e618c82fed75e994526fc71086e8ea5b3266e2ca))
+* hardening infrastructure — correctness, security, CI/CD, quality, DX ([da01146](https://github.com/fridzema/oxide-dock/commit/da01146cd7492028d1b559fb42f413afeb961b92))
+
+
+### Bug Fixes
+
+* align release-please tags with release workflow trigger ([3185b20](https://github.com/fridzema/oxide-dock/commit/3185b20458938be0f952bcc6aa24d311416da2cf))
+* avoid mutating IPC response in FileDialogDemo ([9cddd78](https://github.com/fridzema/oxide-dock/commit/9cddd7895ad217193ca87636ae785e5496f5e346))
+* complete bootstrap rename for all hardcoded OxideDock references ([15042c0](https://github.com/fridzema/oxide-dock/commit/15042c00698cb444ffa7a31bb7af22480f6ade59))
+* prevent [object Object] in error log messages ([522f586](https://github.com/fridzema/oxide-dock/commit/522f5862b364156dc30645ecdba8b017e0d5d662))
+* prevent error logging recursion when Tauri runtime unavailable ([486272d](https://github.com/fridzema/oxide-dock/commit/486272d4cc3a27695213c4d557ddad11f6a38c4d))
+* **security:** remove custom read_text_file command that bypassed Tauri ACL ([2eea336](https://github.com/fridzema/oxide-dock/commit/2eea3365e76716c962849461ba21add1bc08489e))
+* **security:** remove unscoped fs:allow-stat, use content.length instead ([cd6e386](https://github.com/fridzema/oxide-dock/commit/cd6e3863911a0dcd5ef559e66c25308ba351012f))
+* update SECURITY.md supported versions to 0.x ([c7b271b](https://github.com/fridzema/oxide-dock/commit/c7b271b7fd4153a9a4a06131c07e35986f4d00b3))
+* use Tauri getVersion() API for dynamic version display ([4cf28e2](https://github.com/fridzema/oxide-dock/commit/4cf28e2549904bd0af4a4086776833bbe9f9a444))
+
 ## [0.3.1](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.3.0...oxidedock-v0.3.1) (2026-02-13)
 
 
