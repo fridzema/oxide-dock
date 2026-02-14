@@ -125,6 +125,25 @@ describe('FileDialogDemo', () => {
     expect(wrapper.text()).toContain('Dialog failed')
   })
 
+  it('does not mutate the IPC response object when truncating', async () => {
+    const longContent = 'x'.repeat(20000)
+    const response = {
+      path: '/path/to/big.txt',
+      content: longContent,
+      size_bytes: 20000,
+    }
+    vi.mocked(open).mockResolvedValue('/path/to/big.txt')
+    vi.mocked(commands.readTextFile).mockResolvedValue(response)
+    const wrapper = mount(FileDialogDemo)
+
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+
+    // Original response object should be unmodified
+    expect(response.content).toHaveLength(20000)
+    expect(wrapper.text()).toContain('truncated')
+  })
+
   it('falls back to String(e) when error has no message', async () => {
     vi.mocked(open).mockResolvedValue('/path/to/file.txt')
     vi.mocked(commands.readTextFile).mockRejectedValue('raw string error')

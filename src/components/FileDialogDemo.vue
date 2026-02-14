@@ -36,13 +36,10 @@ async function openFile() {
     if (!selected) return
 
     const result = await commands.readTextFile(selected)
-    if (result.content.length > MAX_DISPLAY_BYTES) {
-      result.content = result.content.slice(0, MAX_DISPLAY_BYTES)
-      truncated.value = true
-    } else {
-      truncated.value = false
-    }
-    fileResult.value = result
+    truncated.value = result.content.length > MAX_DISPLAY_BYTES
+    fileResult.value = truncated.value
+      ? { ...result, content: result.content.slice(0, MAX_DISPLAY_BYTES) }
+      : result
     status.value = { message: 'File opened!', error: false }
   } catch (e) {
     const appError = e as AppError
