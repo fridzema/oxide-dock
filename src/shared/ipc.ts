@@ -7,7 +7,7 @@ export interface AppError {
 }
 
 // Command payload types — mirror Rust command signatures
-export interface GreetRequest {
+export type GreetRequest = {
   name: string
 }
 
