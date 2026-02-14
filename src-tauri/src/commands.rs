@@ -9,14 +9,14 @@ pub struct AppInfo {
 }
 
 pub fn greet(name: &str) -> String {
-    format!("Hello, {}! You've been greeted from Rust!", name)
+    format!("Hello, {name}! You've been greeted from Rust!")
 }
 
 pub fn greet_checked(name: &str) -> AppResult<String> {
     if name.trim().is_empty() {
         return Err(AppError::Validation("Name cannot be empty".to_string()));
     }
-    Ok(format!("Hello, {}! You've been greeted from Rust!", name))
+    Ok(format!("Hello, {name}! You've been greeted from Rust!"))
 }
 
 pub fn get_app_info(state: &AppState) -> AppResult<AppInfo> {

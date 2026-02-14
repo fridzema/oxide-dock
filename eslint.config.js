@@ -5,7 +5,7 @@ import prettierConfig from 'eslint-config-prettier'
 
 export default [
   js.configs.recommended,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.strict,
   ...pluginVue.configs['flat/recommended'],
   prettierConfig,
   {
@@ -16,7 +16,14 @@ export default [
       },
     },
     rules: {
+      // False positive: ESLint cannot see template usage of script setup bindings
       'no-useless-assignment': 'off',
+    },
+  },
+  {
+    files: ['tests/**/*.ts'],
+    rules: {
+      '@typescript-eslint/no-non-null-assertion': 'off',
     },
   },
   {

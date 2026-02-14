@@ -3,6 +3,9 @@ mod error;
 mod handlers;
 mod state;
 
+/// # Errors
+///
+/// Returns an error if the Tauri runtime fails to initialize or run.
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() -> Result<(), Box<dyn std::error::Error>> {
     tauri::Builder::default()
