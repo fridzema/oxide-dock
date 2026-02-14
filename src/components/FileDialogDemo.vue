@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { open } from '@tauri-apps/plugin-dialog'
-import { readTextFile, stat } from '@tauri-apps/plugin-fs'
+import { readTextFile } from '@tauri-apps/plugin-fs'
 
 const MAX_DISPLAY_BYTES = 10240
 
@@ -37,10 +37,9 @@ async function openFile() {
     if (!selected) return
 
     const content = await readTextFile(selected)
-    const fileStat = await stat(selected)
 
     filePath.value = selected
-    fileSizeBytes.value = fileStat.size
+    fileSizeBytes.value = content.length
     truncated.value = content.length > MAX_DISPLAY_BYTES
     fileContent.value = truncated.value ? content.slice(0, MAX_DISPLAY_BYTES) : content
     status.value = { message: 'File opened!', error: false }

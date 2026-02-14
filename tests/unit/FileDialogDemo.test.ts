@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import FileDialogDemo from '../../src/components/FileDialogDemo.vue'
 import { open } from '@tauri-apps/plugin-dialog'
-import { readTextFile, stat } from '@tauri-apps/plugin-fs'
+import { readTextFile } from '@tauri-apps/plugin-fs'
 
 vi.mock('@tauri-apps/plugin-dialog', () => ({
   open: vi.fn(),
@@ -10,14 +10,12 @@ vi.mock('@tauri-apps/plugin-dialog', () => ({
 
 vi.mock('@tauri-apps/plugin-fs', () => ({
   readTextFile: vi.fn(),
-  stat: vi.fn(),
 }))
 
 describe('FileDialogDemo', () => {
   beforeEach(() => {
     vi.mocked(open).mockReset()
     vi.mocked(readTextFile).mockReset()
-    vi.mocked(stat).mockReset()
   })
 
   it('renders title and description', () => {
@@ -40,7 +38,6 @@ describe('FileDialogDemo', () => {
   it('opens file and shows content with metadata', async () => {
     vi.mocked(open).mockResolvedValue('/path/to/file.txt')
     vi.mocked(readTextFile).mockResolvedValue('Hello world')
-    vi.mocked(stat).mockResolvedValue({ size: 11 } as unknown as Awaited<ReturnType<typeof stat>>)
     const wrapper = mount(FileDialogDemo)
 
     await wrapper.find('button').trigger('click')
@@ -58,9 +55,6 @@ describe('FileDialogDemo', () => {
     const longContent = 'x'.repeat(20000)
     vi.mocked(open).mockResolvedValue('/path/to/big.txt')
     vi.mocked(readTextFile).mockResolvedValue(longContent)
-    vi.mocked(stat).mockResolvedValue({ size: 20000 } as unknown as Awaited<
-      ReturnType<typeof stat>
-    >)
     const wrapper = mount(FileDialogDemo)
 
     await wrapper.find('button').trigger('click')
@@ -72,7 +66,6 @@ describe('FileDialogDemo', () => {
   it('shows path but no content for empty file', async () => {
     vi.mocked(open).mockResolvedValue('/path/to/empty.txt')
     vi.mocked(readTextFile).mockResolvedValue('')
-    vi.mocked(stat).mockResolvedValue({ size: 0 } as unknown as Awaited<ReturnType<typeof stat>>)
     const wrapper = mount(FileDialogDemo)
 
     await wrapper.find('button').trigger('click')
