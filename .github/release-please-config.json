@@ -3,7 +3,6 @@
   "packages": {
     ".": {
       "release-type": "node",
-      "package-name": "oxidedock",
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
       "extra-files": [
