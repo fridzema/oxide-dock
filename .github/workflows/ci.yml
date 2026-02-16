@@ -20,10 +20,8 @@ jobs:
 
       - name: ESLint
         run: bunx eslint .
-      - name: Oxlint
-        run: bunx oxlint .
-      - name: Prettier
-        run: bunx prettier --check .
+      - name: Biome
+        run: bunx biome check .
       - name: Type check
         run: bunx vue-tsc --noEmit
 
