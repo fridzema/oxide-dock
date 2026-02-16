@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount, flushPromises } from '@vue/test-utils'
 import { getVersion } from '@tauri-apps/api/app'
+import { flushPromises, mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import AboutPage from '../../src/pages/AboutPage.vue'
 
 vi.mock('@tauri-apps/api/app', () => ({

@@ -1,7 +1,7 @@
-import { describe, it, expectTypeOf, beforeEach } from 'vitest'
-import { setActivePinia, createPinia } from 'pinia'
-import { useCounterStore } from '../../src/stores/counter'
+import { createPinia, setActivePinia } from 'pinia'
+import { beforeEach, describe, expectTypeOf, it } from 'vitest'
 import type { Router } from 'vue-router'
+import { useCounterStore } from '../../src/stores/counter'
 
 describe('type tests', () => {
   describe('counter store', () => {

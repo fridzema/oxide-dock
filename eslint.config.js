@@ -1,18 +1,15 @@
-import js from '@eslint/js'
-import tseslint from 'typescript-eslint'
+import tsParser from '@typescript-eslint/parser'
+import biomeConfig from 'eslint-config-biome'
 import pluginVue from 'eslint-plugin-vue'
-import prettierConfig from 'eslint-config-prettier'
 
 export default [
-  js.configs.recommended,
-  ...tseslint.configs.strict,
   ...pluginVue.configs['flat/recommended'],
-  prettierConfig,
+  biomeConfig,
   {
     files: ['**/*.vue'],
     languageOptions: {
       parserOptions: {
-        parser: tseslint.parser,
+        parser: tsParser,
       },
     },
     rules: {
@@ -21,12 +18,6 @@ export default [
     },
   },
   {
-    files: ['tests/**/*.ts'],
-    rules: {
-      '@typescript-eslint/no-non-null-assertion': 'off',
-    },
-  },
-  {
-    ignores: ['dist/', 'src-tauri/target/', 'node_modules/'],
+    ignores: ['dist/', 'src-tauri/target/', 'node_modules/', 'coverage/'],
   },
 ]

@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useCounterStore } from '../stores/counter'
-import NotificationDemo from '../components/NotificationDemo.vue'
 import ClipboardDemo from '../components/ClipboardDemo.vue'
 import FileDialogDemo from '../components/FileDialogDemo.vue'
+import NotificationDemo from '../components/NotificationDemo.vue'
 import SystemInfoDemo from '../components/SystemInfoDemo.vue'
+import { useCounterStore } from '../stores/counter'
 
 const counter = useCounterStore()
 

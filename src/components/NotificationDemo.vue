@@ -1,10 +1,10 @@
 <script setup lang="ts">
-import { ref } from 'vue'
 import {
   isPermissionGranted,
   requestPermission,
   sendNotification,
 } from '@tauri-apps/plugin-notification'
+import { ref } from 'vue'
 
 const title = ref('Hello from Tauri!')
 const body = ref('This is a native notification')

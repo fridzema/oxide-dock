@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
 test.describe('App Navigation', () => {
   test('home page loads with correct title', async ({ page }) => {

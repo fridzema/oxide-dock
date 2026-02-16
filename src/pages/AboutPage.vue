@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
 import { getVersion } from '@tauri-apps/api/app'
+import { onMounted, ref } from 'vue'
 
 const appVersion = ref('')
 

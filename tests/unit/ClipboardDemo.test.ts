@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount, flushPromises } from '@vue/test-utils'
+import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
+import { flushPromises, mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import ClipboardDemo from '../../src/components/ClipboardDemo.vue'
-import { writeText, readText } from '@tauri-apps/plugin-clipboard-manager'
 
 vi.mock('@tauri-apps/plugin-clipboard-manager', () => ({
   writeText: vi.fn(),
