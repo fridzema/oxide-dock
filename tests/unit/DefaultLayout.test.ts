@@ -1,5 +1,5 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, ref } from 'vue'
 import { useDarkMode } from '../../src/composables/useDarkMode'
 import DefaultLayout from '../../src/layouts/DefaultLayout.vue'

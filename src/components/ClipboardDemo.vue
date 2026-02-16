@@ -1,6 +1,6 @@
 <script setup lang="ts">
+import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { ref } from 'vue'
-import { writeText, readText } from '@tauri-apps/plugin-clipboard-manager'
 
 const textToWrite = ref('Hello from Tauri clipboard!')
 const clipboardContent = ref<string | null>(null)

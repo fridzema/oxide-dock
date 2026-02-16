@@ -1,6 +1,6 @@
-import pluginVue from 'eslint-plugin-vue'
 import tsParser from '@typescript-eslint/parser'
 import biomeConfig from 'eslint-config-biome'
+import pluginVue from 'eslint-plugin-vue'
 
 export default [
   ...pluginVue.configs['flat/recommended'],

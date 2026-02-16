@@ -1,13 +1,13 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount, flushPromises } from '@vue/test-utils'
-import SystemInfoDemo from '../../src/components/SystemInfoDemo.vue'
+import { openUrl } from '@tauri-apps/plugin-opener'
 import {
-  type as osType,
-  version as osVersion,
   arch as osArch,
   platform as osPlatform,
+  type as osType,
+  version as osVersion,
 } from '@tauri-apps/plugin-os'
-import { openUrl } from '@tauri-apps/plugin-opener'
+import { flushPromises, mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import SystemInfoDemo from '../../src/components/SystemInfoDemo.vue'
 
 vi.mock('@tauri-apps/plugin-os', () => ({
   type: vi.fn(),

@@ -1,5 +1,5 @@
-import { describe, it, expect, vi } from 'vitest'
 import { useDark, useToggle } from '@vueuse/core'
+import { describe, expect, it, vi } from 'vitest'
 import { useDarkMode } from '../../src/composables/useDarkMode'
 
 vi.mock('@vueuse/core', () => ({

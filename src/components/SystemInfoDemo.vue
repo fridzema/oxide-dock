@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { openUrl } from '@tauri-apps/plugin-opener'
 import {
-  type as osType,
-  version as osVersion,
   arch as osArch,
   platform as osPlatform,
+  type as osType,
+  version as osVersion,
 } from '@tauri-apps/plugin-os'
-import { openUrl } from '@tauri-apps/plugin-opener'
+import { onMounted, ref } from 'vue'
 
 const info = ref<{ label: string; value: string }[]>([])
 

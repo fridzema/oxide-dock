@@ -1,8 +1,8 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount, flushPromises } from '@vue/test-utils'
-import FileDialogDemo from '../../src/components/FileDialogDemo.vue'
 import { open } from '@tauri-apps/plugin-dialog'
 import { readTextFile } from '@tauri-apps/plugin-fs'
+import { flushPromises, mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import FileDialogDemo from '../../src/components/FileDialogDemo.vue'
 
 vi.mock('@tauri-apps/plugin-dialog', () => ({
   open: vi.fn(),

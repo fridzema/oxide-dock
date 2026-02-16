@@ -1,7 +1,7 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { invoke } from '@tauri-apps/api/core'
-import { commands, invokeCommand } from '../../src/shared/ipc'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 import type { AppError } from '../../src/shared/ipc'
+import { commands, invokeCommand } from '../../src/shared/ipc'
 
 vi.mock('@tauri-apps/api/core', () => ({
   invoke: vi.fn(),

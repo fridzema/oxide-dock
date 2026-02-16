@@ -1,11 +1,11 @@
-import { describe, it, expect, vi, beforeEach } from 'vitest'
-import { mount, flushPromises } from '@vue/test-utils'
-import NotificationDemo from '../../src/components/NotificationDemo.vue'
 import {
-  sendNotification,
   isPermissionGranted,
   requestPermission,
+  sendNotification,
 } from '@tauri-apps/plugin-notification'
+import { flushPromises, mount } from '@vue/test-utils'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+import NotificationDemo from '../../src/components/NotificationDemo.vue'
 
 vi.mock('@tauri-apps/plugin-notification', () => ({
   sendNotification: vi.fn(),
