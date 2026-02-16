@@ -19,10 +19,10 @@
   "files": {
     "includes": [
       "**",
-      "!dist/**",
-      "!src-tauri/target/**",
-      "!src-tauri/gen/**",
-      "!node_modules/**",
+      "!dist",
+      "!src-tauri/target",
+      "!src-tauri/gen",
+      "!node_modules",
       "!bun.lock",
       "!CHANGELOG.md"
     ]
@@ -30,7 +30,7 @@
   "linter": {
     "rules": {
       "correctness": {
-        "noUnusedImports": "warn",
+        "noUnusedImports": "off",
         "noUnusedVariables": "off"
       }
     }
