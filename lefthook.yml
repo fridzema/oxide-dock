@@ -7,14 +7,11 @@ pre-commit:
   parallel: true
   commands:
     eslint:
-      glob: '*.{js,ts,vue}'
+      glob: '*.vue'
       run: bunx eslint {staged_files}
-    oxlint:
-      glob: '*.{js,ts,vue}'
-      run: bunx oxlint {staged_files}
-    prettier:
-      glob: '*.{js,ts,vue,css,json,md,yml,yaml}'
-      run: bunx prettier --check {staged_files}
+    biome:
+      glob: '*.{js,ts,vue,css,json}'
+      run: bunx biome check {staged_files}
     # Clippy requires whole-crate context — runs full check even for single-file changes.
     # To skip pre-commit hooks: LEFTHOOK=0 git commit -m "message"
     clippy:
