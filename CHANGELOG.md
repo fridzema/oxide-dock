@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.5.0...oxidedock-v0.6.0) (2026-04-21)
+
+
+### Bug Fixes
+
+* **ci:** stop caching node_modules (stale nested deps after lockfile change) ([#33](https://github.com/fridzema/oxide-dock/issues/33)) ([ca5b49f](https://github.com/fridzema/oxide-dock/commit/ca5b49ffd0c765a16754be604e1b1cf529696cd5))
+* **linux:** disable webkit2gtk DMA-BUF renderer to restore AppImage scroll ([#32](https://github.com/fridzema/oxide-dock/issues/32)) ([c5c3080](https://github.com/fridzema/oxide-dock/commit/c5c308058bcc08cc1b7c40d0bdee9de33f614c18))
+* **types:** add *.vue module shim for TS build ([#29](https://github.com/fridzema/oxide-dock/issues/29)) ([32fb487](https://github.com/fridzema/oxide-dock/commit/32fb487c2cfe71d1b933022db5e34c12ad6fd916)), closes [#26](https://github.com/fridzema/oxide-dock/issues/26)
+
+
+### Miscellaneous Chores
+
+* bump to 0.6.0 for v0.6.0 dep-refresh release ([74536af](https://github.com/fridzema/oxide-dock/commit/74536afd72589787c59bccedc9404b48676e94cf))
+
 ## [0.5.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.4.0...oxidedock-v0.5.0) (2026-03-03)
 
 
