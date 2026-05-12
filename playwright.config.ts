@@ -7,7 +7,7 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   reporter: process.env.CI ? 'github' : 'html',
   use: {
-    baseURL: 'http://localhost:1420',
+    baseURL: 'http://127.0.0.1:1420',
     trace: 'on-first-retry',
   },
   projects: [
@@ -26,7 +26,8 @@ export default defineConfig({
   ],
   webServer: {
     command: 'bun run dev',
-    url: 'http://localhost:1420',
+    url: 'http://127.0.0.1:1420',
     reuseExistingServer: !process.env.CI,
+    timeout: 120_000,
   },
 })
