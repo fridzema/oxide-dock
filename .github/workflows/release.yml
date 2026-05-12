@@ -3,8 +3,14 @@ name: Release
 on:
   push:
     tags:
-      # Stable releases only — pre-release tags (e.g. v1.0.0-beta.1) intentionally excluded
-      - 'v[0-9]+.[0-9]+.[0-9]+'
+      # release-please tags this package as oxidedock-vX.Y.Z. Pre-release tags
+      # (e.g. oxidedock-v1.0.0-beta.1) intentionally excluded.
+      - 'oxidedock-v[0-9]+.[0-9]+.[0-9]+'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build/release (e.g. oxidedock-v0.7.0)'
+        required: true
 
 permissions:
   contents: write
@@ -32,6 +38,8 @@ jobs:
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v6
+        with:
+          ref: ${{ inputs.tag || github.ref_name }}
 
       - uses: oven-sh/setup-bun@v2
 
@@ -68,7 +76,7 @@ jobs:
           # changelog as the body. With releaseDraft=false, tauri-action attaches
           # build artifacts to that existing release instead of creating a
           # separate empty draft (see issue #38).
-          tagName: ${{ github.ref_name }}
+          tagName: ${{ inputs.tag || github.ref_name }}
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
