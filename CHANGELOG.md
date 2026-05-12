@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.1](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.7.0...oxidedock-v0.7.1) (2026-05-12)
+
+
+### Bug Fixes
+
+* **ci:** match release-please tag prefix + add workflow_dispatch ([#50](https://github.com/fridzema/oxide-dock/issues/50)) ([41bca5c](https://github.com/fridzema/oxide-dock/commit/41bca5c872ed09d3d720fa5d3a150ad08d82d7f6)), closes [#38](https://github.com/fridzema/oxide-dock/issues/38)
+
 ## [0.7.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.6.0...oxidedock-v0.7.0) (2026-05-12)
 
 
