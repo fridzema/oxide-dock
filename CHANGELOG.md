@@ -5,6 +5,20 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.6.0...oxidedock-v0.7.0) (2026-05-12)
+
+
+### Features
+
+* add filepath to file browser to reopen previous folder ([#35](https://github.com/fridzema/oxide-dock/issues/35)) ([fea3618](https://github.com/fridzema/oxide-dock/commit/fea3618f7df418b0dd13c7faf534b65f9064991f))
+
+
+### Bug Fixes
+
+* **ci:** attach build artifacts to release-please release ([#49](https://github.com/fridzema/oxide-dock/issues/49)) ([5da4339](https://github.com/fridzema/oxide-dock/commit/5da4339e5002bb0e13ccb8dc1fa64d133aa9c738)), closes [#38](https://github.com/fridzema/oxide-dock/issues/38)
+* **e2e:** force IPv4 + raise webServer timeout to 120s ([#46](https://github.com/fridzema/oxide-dock/issues/46)) ([accd02b](https://github.com/fridzema/oxide-dock/commit/accd02b6b1410b01d21b5b580fac7f60acd4c203)), closes [#36](https://github.com/fridzema/oxide-dock/issues/36)
+* fix hardcoded current version in bootstrap.sh ([#37](https://github.com/fridzema/oxide-dock/issues/37)) ([e51eab9](https://github.com/fridzema/oxide-dock/commit/e51eab908df2e6dabeb1cff077120ebf4dce6bc7))
+
 ## [0.6.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.5.0...oxidedock-v0.6.0) (2026-04-21)
 
 
