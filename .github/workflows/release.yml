@@ -64,9 +64,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
+          # release-please already publishes a GitHub Release on this tag with the
+          # changelog as the body. With releaseDraft=false, tauri-action attaches
+          # build artifacts to that existing release instead of creating a
+          # separate empty draft (see issue #38).
           tagName: ${{ github.ref_name }}
-          releaseName: 'OxideDock ${{ github.ref_name }}'
-          releaseBody: 'See the assets to download this version and install.'
-          releaseDraft: true
+          releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
