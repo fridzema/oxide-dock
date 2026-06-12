@@ -83,7 +83,7 @@ describe('SystemInfoDemo', () => {
     await ghButton.trigger('click')
     await flushPromises()
 
-    expect(wrapper.find('[role="status"]').text()).toBe('Error: Open failed')
+    expect(wrapper.find('[role="status"]').text()).toBe('Open failed')
     expect(wrapper.find('[role="status"]').classes()).toContain('text-red-500')
   })
 })

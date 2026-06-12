@@ -15,10 +15,10 @@ onMounted(async () => {
 const techStack = [
   { name: 'Tauri', version: 'v2', url: 'https://v2.tauri.app/', description: 'Desktop runtime' },
   { name: 'Vue', version: 'v3', url: 'https://vuejs.org/', description: 'Frontend framework' },
-  { name: 'Vite', version: 'v7', url: 'https://vite.dev/', description: 'Build tool' },
+  { name: 'Vite', version: 'v8', url: 'https://vite.dev/', description: 'Build tool' },
   {
     name: 'TypeScript',
-    version: 'v5',
+    version: 'v6',
     url: 'https://www.typescriptlang.org/',
     description: 'Type safety',
   },

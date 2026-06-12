@@ -51,6 +51,33 @@ describe('FileDialogDemo', () => {
     expect(wrapper.text()).toContain('File opened!')
   })
 
+  it('reports size in bytes for multibyte content', async () => {
+    vi.mocked(open).mockResolvedValue('/path/to/utf8.txt')
+    vi.mocked(readTextFile).mockResolvedValue('héllo') // 5 chars, 6 bytes in UTF-8
+    const wrapper = mount(FileDialogDemo)
+
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain('6 B')
+  })
+
+  it('reuses the previous file path as defaultPath on the next open', async () => {
+    vi.mocked(open).mockResolvedValue('/path/to/file.txt')
+    vi.mocked(readTextFile).mockResolvedValue('Hello world')
+    const wrapper = mount(FileDialogDemo)
+
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+    expect(vi.mocked(open).mock.calls[0][0]).not.toHaveProperty('defaultPath')
+
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+    expect(vi.mocked(open).mock.calls[1][0]).toMatchObject({
+      defaultPath: '/path/to/file.txt',
+    })
+  })
+
   it('truncates content longer than 10KB', async () => {
     const longContent = 'x'.repeat(20000)
     vi.mocked(open).mockResolvedValue('/path/to/big.txt')
@@ -108,7 +135,7 @@ describe('FileDialogDemo', () => {
     expect(wrapper.text()).toContain('Dialog failed')
   })
 
-  it('falls back to String(e) when error has no message property', async () => {
+  it('shows plain string rejection values as-is', async () => {
     vi.mocked(open).mockResolvedValue('/path/to/file.txt')
     vi.mocked(readTextFile).mockRejectedValue('raw string error')
     const wrapper = mount(FileDialogDemo)

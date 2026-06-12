@@ -5,6 +5,7 @@ import {
   sendNotification,
 } from '@tauri-apps/plugin-notification'
 import { ref } from 'vue'
+import { formatError } from '../shared/ipc'
 
 const title = ref('Hello from Tauri!')
 const body = ref('This is a native notification')
@@ -18,13 +19,13 @@ async function send() {
       granted = permission === 'granted'
     }
     if (granted) {
-      sendNotification({ title: title.value, body: body.value })
+      await sendNotification({ title: title.value, body: body.value })
       status.value = { message: 'Notification sent!', error: false }
     } else {
       status.value = { message: 'Permission denied', error: true }
     }
   } catch (e) {
-    status.value = { message: String(e), error: true }
+    status.value = { message: formatError(e), error: true }
   }
 }
 </script>

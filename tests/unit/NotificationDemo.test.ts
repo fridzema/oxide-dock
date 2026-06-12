@@ -15,7 +15,7 @@ vi.mock('@tauri-apps/plugin-notification', () => ({
 
 describe('NotificationDemo', () => {
   beforeEach(() => {
-    vi.mocked(sendNotification).mockClear()
+    vi.mocked(sendNotification).mockReset()
     vi.mocked(isPermissionGranted).mockReset()
     vi.mocked(requestPermission).mockReset()
   })
@@ -87,7 +87,19 @@ describe('NotificationDemo', () => {
     await wrapper.find('button').trigger('click')
     await flushPromises()
 
-    expect(wrapper.find('[role="status"]').text()).toBe('Error: Plugin error')
+    expect(wrapper.find('[role="status"]').text()).toBe('Plugin error')
+    expect(wrapper.find('[role="status"]').classes()).toContain('text-red-500')
+  })
+
+  it('shows error when sendNotification fails', async () => {
+    vi.mocked(isPermissionGranted).mockResolvedValue(true)
+    vi.mocked(sendNotification).mockRejectedValue(new Error('Send failed'))
+    const wrapper = mount(NotificationDemo)
+
+    await wrapper.find('button').trigger('click')
+    await flushPromises()
+
+    expect(wrapper.find('[role="status"]').text()).toBe('Send failed')
     expect(wrapper.find('[role="status"]').classes()).toContain('text-red-500')
   })
 

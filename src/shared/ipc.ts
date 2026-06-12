@@ -17,20 +17,45 @@ export type AppInfo = {
   visit_count: number
 }
 
-// Known Tauri command names — must match handlers in src-tauri/src/handlers.rs
-export type CommandName = 'greet' | 'greet_checked' | 'get_app_info'
+// Command name → result type — must match handlers in src-tauri/src/handlers.rs
+export type CommandResults = {
+  greet: string
+  greet_checked: string
+  get_app_info: AppInfo
+}
 
-// Type-safe invoke wrapper
-export async function invokeCommand<TRes>(
-  cmd: CommandName,
+export type CommandName = keyof CommandResults
+
+// Type-safe invoke wrapper: the result type is derived from the command name
+export async function invokeCommand<C extends CommandName>(
+  cmd: C,
   args?: Record<string, unknown>,
-): Promise<TRes> {
-  return invoke<TRes>(cmd, args)
+): Promise<CommandResults[C]> {
+  return invoke<CommandResults[C]>(cmd, args)
 }
 
 // Pre-typed command functions
 export const commands = {
-  greet: (req: GreetRequest) => invokeCommand<string>('greet', req),
-  greetChecked: (req: GreetRequest) => invokeCommand<string>('greet_checked', req),
-  getAppInfo: () => invokeCommand<AppInfo>('get_app_info'),
+  greet: (req: GreetRequest) => invokeCommand('greet', req),
+  greetChecked: (req: GreetRequest) => invokeCommand('greet_checked', req),
+  getAppInfo: () => invokeCommand('get_app_info'),
 } as const
+
+// Narrows unknown rejection values to the structured AppError shape
+export function isAppError(e: unknown): e is AppError {
+  return (
+    typeof e === 'object' &&
+    e !== null &&
+    'code' in e &&
+    'message' in e &&
+    typeof (e as { message: unknown }).message === 'string'
+  )
+}
+
+// Human-readable message from any rejection value: structured AppError objects
+// from Rust commands, Error instances, or plain string rejections from plugins
+export function formatError(e: unknown): string {
+  if (isAppError(e)) return e.message
+  if (e instanceof Error) return e.message
+  return String(e)
+}

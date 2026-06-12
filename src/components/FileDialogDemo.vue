@@ -2,8 +2,9 @@
 import { open } from '@tauri-apps/plugin-dialog'
 import { readTextFile } from '@tauri-apps/plugin-fs'
 import { ref } from 'vue'
+import { formatError } from '../shared/ipc'
 
-const MAX_DISPLAY_BYTES = 10240
+const MAX_DISPLAY_CHARS = 10240
 
 const filePath = ref<string | null>(null)
 const fileContent = ref('')
@@ -40,15 +41,13 @@ async function openFile() {
     const content = await readTextFile(selected)
 
     filePath.value = selected
-    fileSizeBytes.value = content.length
-    truncated.value = content.length > MAX_DISPLAY_BYTES
-    fileContent.value = truncated.value ? content.slice(0, MAX_DISPLAY_BYTES) : content
+    // content.length counts UTF-16 code units; encode to get the true byte size
+    fileSizeBytes.value = new TextEncoder().encode(content).length
+    truncated.value = content.length > MAX_DISPLAY_CHARS
+    fileContent.value = truncated.value ? content.slice(0, MAX_DISPLAY_CHARS) : content
     status.value = { message: 'File opened!', error: false }
   } catch (e) {
-    status.value = {
-      message: e instanceof Error ? e.message : String(e),
-      error: true,
-    }
+    status.value = { message: formatError(e), error: true }
   }
 }
 
@@ -97,11 +96,12 @@ function formatBytes(bytes: number): string {
         >{{ fileContent }}</pre
       >
       <p v-if="truncated" class="text-xs text-amber-500">
-        Content truncated (showing first {{ formatBytes(MAX_DISPLAY_BYTES) }})
+        Content truncated (showing first {{ MAX_DISPLAY_CHARS.toLocaleString() }} characters)
       </p>
     </div>
     <p
       v-if="status"
+      role="status"
       class="text-xs"
       :class="status.error ? 'text-red-500' : 'text-green-500 dark:text-green-400'"
     >

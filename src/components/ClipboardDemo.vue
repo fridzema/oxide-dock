@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { readText, writeText } from '@tauri-apps/plugin-clipboard-manager'
 import { ref } from 'vue'
+import { formatError } from '../shared/ipc'
 
 const textToWrite = ref('Hello from Tauri clipboard!')
 const clipboardContent = ref<string | null>(null)
@@ -11,7 +12,7 @@ async function copy() {
     await writeText(textToWrite.value)
     status.value = { message: 'Copied!', error: false }
   } catch (e) {
-    status.value = { message: String(e), error: true }
+    status.value = { message: formatError(e), error: true }
   }
 }
 
@@ -21,7 +22,7 @@ async function read() {
     clipboardContent.value = text || '(empty)'
     status.value = null
   } catch (e) {
-    status.value = { message: String(e), error: true }
+    status.value = { message: formatError(e), error: true }
   }
 }
 </script>

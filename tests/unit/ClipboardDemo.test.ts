@@ -70,7 +70,7 @@ describe('ClipboardDemo', () => {
       .trigger('click')
     await flushPromises()
 
-    expect(wrapper.find('[role="status"]').text()).toBe('Error: Copy failed')
+    expect(wrapper.find('[role="status"]').text()).toBe('Copy failed')
     expect(wrapper.find('[role="status"]').classes()).toContain('text-red-500')
   })
 
@@ -110,7 +110,7 @@ describe('ClipboardDemo', () => {
       .trigger('click')
     await flushPromises()
 
-    expect(wrapper.find('[role="status"]').text()).toBe('Error: Read failed')
+    expect(wrapper.find('[role="status"]').text()).toBe('Read failed')
   })
 
   it('clears status after successful read', async () => {

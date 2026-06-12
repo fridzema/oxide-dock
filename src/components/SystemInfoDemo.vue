@@ -7,6 +7,7 @@ import {
   version as osVersion,
 } from '@tauri-apps/plugin-os'
 import { onMounted, ref } from 'vue'
+import { formatError } from '../shared/ipc'
 
 const info = ref<{ label: string; value: string }[]>([])
 
@@ -30,7 +31,7 @@ async function openGitHub() {
     await openUrl('https://github.com/fridzema/oxide-dock')
     status.value = { message: 'Opened in browser!', error: false }
   } catch (e) {
-    status.value = { message: String(e), error: true }
+    status.value = { message: formatError(e), error: true }
   }
 }
 </script>

@@ -24,7 +24,7 @@ pub fn get_app_info(state: &AppState) -> AppResult<AppInfo> {
         .visit_count
         .lock()
         .map_err(|e| AppError::Internal(format!("Lock poisoned: {e}")))?;
-    *count += 1;
+    *count = count.saturating_add(1);
     Ok(AppInfo {
         name: state.app_name.clone(),
         visit_count: *count,
@@ -89,6 +89,14 @@ mod tests {
         let _ = get_app_info(&state).unwrap();
         let info = get_app_info(&state).unwrap();
         assert_eq!(info.visit_count, 2);
+    }
+
+    #[test]
+    fn test_get_app_info_saturates_at_max() {
+        let state = AppState::default();
+        *state.visit_count.lock().unwrap() = u32::MAX;
+        let info = get_app_info(&state).unwrap();
+        assert_eq!(info.visit_count, u32::MAX);
     }
 
     #[test]
