@@ -24,7 +24,8 @@
       "!src-tauri/gen",
       "!node_modules",
       "!bun.lock",
-      "!CHANGELOG.md"
+      "!CHANGELOG.md",
+      "!**/*.svg"
     ]
   },
   "linter": {
