@@ -8,11 +8,13 @@ on:
     paths:
       - 'src-tauri/Cargo.toml'
       - 'src-tauri/Cargo.lock'
+      - '.github/workflows/cargo-audit.yml'
   pull_request:
     branches: [main]
     paths:
       - 'src-tauri/Cargo.toml'
       - 'src-tauri/Cargo.lock'
+      - '.github/workflows/cargo-audit.yml'
 
 jobs:
   cargo-audit:
@@ -25,4 +27,9 @@ jobs:
       - uses: taiki-e/install-action@cargo-audit
 
       - name: Cargo audit
-        run: cd src-tauri && cargo audit
+        # RUSTSEC-2026-0194 / RUSTSEC-2026-0195: quadratic runtime and unbounded
+        # allocation DoS in quick-xml (<0.41.0), pulled transitively via
+        # plist -> tauri. Patched only in quick-xml 0.41.0, which plist 1.9.0
+        # (latest) does not yet allow. Not reachable at app runtime (plist is
+        # used for bundle metadata). Remove once tauri/plist bump quick-xml.
+        run: cd src-tauri && cargo audit --ignore RUSTSEC-2026-0194 --ignore RUSTSEC-2026-0195
