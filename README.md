@@ -222,6 +222,14 @@ Create locale files in `src/locales/` and register the plugin in `src/main.ts`.
 
 Follow the [Tauri code signing guide](https://v2.tauri.app/distribute/sign/) to set up signing for macOS and Windows distribution.
 
+## Built with OxideDock
+
+Apps shipped on top of OxideDock:
+
+- [SoapDuck](https://www.soapduck.com) — a native macOS SOAP client for developers: load WSDLs, build and send SOAP requests, and inspect responses, with WS-Security and certificate signing.
+
+Built something with OxideDock? Open a PR to add it here.
+
 ## Contributing
 
 1. Fork the repository
