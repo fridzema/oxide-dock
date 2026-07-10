@@ -39,7 +39,7 @@
     "@playwright/test": "^1.61.1",
     "@tailwindcss/vite": "^4.3.2",
     "@tauri-apps/cli": "^2.11.4",
-    "@types/node": "^25.9.4",
+    "@types/node": "^26.1.1",
     "@typescript-eslint/parser": "^8.62.1",
     "@vitejs/plugin-vue": "^6.0.7",
     "@vitest/coverage-istanbul": "^4.1.9",
@@ -52,7 +52,7 @@
     "jsdom": "^29.1.1",
     "lefthook": "^2.1.9",
     "tailwindcss": "^4.3.2",
-    "typescript": "~6.0.3",
+    "typescript": "~7.0.2",
     "vite": "^8.1.0",
     "vitest": "^4.1.9",
     "vue-tsc": "^3.3.5"
