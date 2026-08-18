@@ -9,6 +9,12 @@ updates:
         dependency-type: development
       production-dependencies:
         dependency-type: production
+    ignore:
+      # vue-tsc 3.3.x resolves the compiler via `typescript/lib/tsc`, which
+      # TypeScript 7 no longer exports, so a major bump breaks both the type
+      # check and the build. Drop this once vue-tsc supports TypeScript 7.
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
 
   - package-ecosystem: cargo
     directory: /src-tauri
