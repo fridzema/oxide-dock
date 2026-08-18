@@ -68,6 +68,23 @@ jobs:
 
       - run: bun install --frozen-lockfile
 
+      # tauri-action v1 always calls updateRelease on an existing published
+      # release, and an unset releaseBody blanks it (create-release.ts:148,
+      # `bodyFileContent || body`). Read release-please's changelog back out
+      # and hand it to the action so it rewrites the body with itself.
+      - name: Capture existing release body
+        id: release-body
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        shell: bash
+        run: |
+          {
+            echo 'body<<RELEASE_BODY_EOF'
+            gh release view "${{ inputs.tag || github.ref_name }}" \
+              --repo "$GITHUB_REPOSITORY" --json body --jq .body || true
+            echo 'RELEASE_BODY_EOF'
+          } >> "$GITHUB_OUTPUT"
+
       - uses: tauri-apps/tauri-action@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -77,6 +94,7 @@ jobs:
           # build artifacts to that existing release instead of creating a
           # separate empty draft (see issue #38).
           tagName: ${{ inputs.tag || github.ref_name }}
+          releaseBody: ${{ steps.release-body.outputs.body }}
           releaseDraft: false
           prerelease: false
           args: ${{ matrix.args }}
