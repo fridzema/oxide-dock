@@ -47,7 +47,7 @@ The bottleneck is **discovery and proof**, not features. OxideDock is absent fro
    Goal is to be unambiguously the best Vue + Tauri starter.
 2. **Stay a lean starter.** Core remains minimal. Growth comes from DX quality,
    documentation, and distribution.
-3. **Two feature bets only:** a generated type-safe Rust↔TS bridge, and tested
+3. **Two feature bets only:** a guarded Rust↔TS command surface, and tested
    opt-in feature recipes.
 4. **Blended phased sequencing:** quick wins → DX moat → coordinated launch → sustain.
 5. **Auto-updater ships as a recipe, not a core default.** Consistent with staying lean.
@@ -94,23 +94,34 @@ Small, high-leverage, no architectural risk.
 
 ## Phase 1 — DX moat
 
-### 1a. Generated type-safe bridge (`tauri-specta`)
+### 1a. IPC drift guard (no new dependency)
 
-Replace the hand-maintained command types in `src/shared/ipc.ts` with bindings generated
-from Rust.
+Make it impossible for the Rust command surface and the TypeScript IPC layer to
+disagree, without adding a dependency.
 
-- Add `specta` and `tauri-specta` to `src-tauri/Cargo.toml`; annotate the command
-  handlers; emit `src/shared/bindings.ts`.
-- Keep the hand-written `formatError` / `isAppError` helpers — they handle plugin
-  rejections that are not command results.
-- Preserve the structured `AppError` shape (`code` + `message`) across the boundary.
-- **CI gate:** regenerate bindings and run `git diff --exit-code`. Drift fails the build.
+**Decision (2026-08-18):** `tauri-specta` was evaluated and rejected for now. It has no
+stable v2 — the latest is `2.0.0-rc.25` (published 2026-05-08), and `max_stable` is
+`1.0.2`, which is the Tauri v1 line. It has been in release candidate for over two years.
+It is actively maintained and heavily used (509k recent downloads), so this is not a
+quality judgment — but a template whose headline is "production-ready defaults" should not
+put a pre-release crate in every user's IPC layer, and RC bumps would churn through
+Dependabot. Revisit when a stable 2.0 ships.
 
-Claim unlocked: *your Rust and TypeScript cannot disagree — CI fails if they drift.*
-No Vue + Tauri competitor offers this.
+Instead, add a Vitest test that cross-checks three sources of truth that can silently
+drift apart:
 
-Risks: `tauri-specta` v2 API stability; interaction with the 100% Rust coverage gate
-(generated/annotated code must not create uncoverable lines).
+1. Commands **registered** in `tauri::generate_handler![...]` in `src-tauri/src/lib.rs`
+2. Commands **defined** as `#[tauri::command]` functions in `src-tauri/src/handlers.rs`
+3. Commands **declared** as `CommandResults` keys in `src/shared/ipc.ts`
+
+All three sets must match exactly. This catches the classic Tauri footgun of writing a
+command and forgetting to register it, and it catches the TypeScript layer falling behind
+the Rust one. It uses the same technique as the README drift guard shipped in Phase 0.
+
+**Known limit, stated honestly:** this verifies the command *surface* — names, and that
+every command exists in all three places. It does not verify payload field types the way
+`tauri-specta` would. Argument-name checking is a possible later strengthening. The public
+claim must be scoped to what the test actually proves.
 
 ### 1b. Recipe system
 
@@ -181,9 +192,10 @@ executed separately:
 
 - **Phase 0** — one plan, mostly repo metadata and documentation edits. Independent of
   all later work; start here.
-- **Phase 1a** (specta bridge) and **Phase 1b** (recipes) — separate plans. 1a touches
-  `src/shared/ipc.ts`, the Rust handlers, and CI; 1b introduces `recipes/` and the marker
-  comments. 1b should land after 1a so recipes insert against the final bridge shape.
+- **Phase 1a** (IPC drift guard) and **Phase 1b** (recipes) — separate plans. 1a adds a
+  test that reads `src-tauri/src/lib.rs`, `src-tauri/src/handlers.rs` and
+  `src/shared/ipc.ts`; 1b introduces `recipes/` and the marker comments. 1b should land
+  after 1a so recipes insert against a guarded command surface.
 - **Phase 1c/1d** — small, can ride along with either.
 - **Phase 2** — planned once Phase 1 is merged, since the docs site and comparison table
   describe what actually shipped.
