@@ -8,6 +8,7 @@
       "cargo": {
         "args": ["build", "--manifest-path=./src-tauri/Cargo.toml", "--no-default-features"]
       },
+      "sourceLanguages": ["rust"],
       "preLaunchTask": "ui:dev"
     },
     {
@@ -17,6 +18,7 @@
       "cargo": {
         "args": ["build", "--release", "--manifest-path=./src-tauri/Cargo.toml"]
       },
+      "sourceLanguages": ["rust"],
       "preLaunchTask": "ui:build"
     }
   ]
