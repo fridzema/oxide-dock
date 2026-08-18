@@ -13,5 +13,15 @@ runs:
         restore-keys: |
           bun-${{ runner.os }}-
 
-    - run: bun install --frozen-lockfile
+    # Dependabot rewrites package.json but cannot regenerate bun.lock, so a
+    # frozen install fails on every one of its PRs. Fall back to a normal
+    # install there; the Dependabot Lockfile workflow commits the regenerated
+    # bun.lock back onto the branch so main never drifts.
+    - name: Install dependencies
       shell: bash
+      run: |
+        if [ "${{ github.actor }}" = "dependabot[bot]" ]; then
+          bun install --no-frozen-lockfile
+        else
+          bun install --frozen-lockfile
+        fi
