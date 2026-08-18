@@ -23,9 +23,18 @@ const readme = readFileSync(resolve(root, 'README.md'), 'utf8')
 const pkg = JSON.parse(readFileSync(resolve(root, 'package.json'), 'utf8'))
 const deps: Record<string, string> = { ...pkg.dependencies, ...pkg.devDependencies }
 
+// Only the Tech Stack table is authoritative for versions; other README tables must not be matched.
+function techStackSection(): string[] {
+  const lines = readme.split('\n')
+  const start = lines.findIndex((line) => line.trim() === '## Tech Stack')
+  if (start === -1) throw new Error('README.md has no "## Tech Stack" heading')
+  const body = lines.slice(start + 1)
+  const end = body.findIndex((line) => line.startsWith('## '))
+  return end === -1 ? body : body.slice(0, end)
+}
+
 function documentedVersion(label: string): string | undefined {
-  const row = readme
-    .split('\n')
+  const row = techStackSection()
     .filter((line) => line.startsWith('|'))
     .map((line) => line.split('|').map((cell) => cell.trim()))
     .find((cells) => cells[1] === label)
