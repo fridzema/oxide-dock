@@ -20,10 +20,11 @@ function registeredCommands(): string[] {
     .sort()
 }
 
-// Functions annotated #[tauri::command]. Tolerates further attributes before the fn.
+// Functions annotated #[tauri::command], bare or parameterized (rename_all = "camelCase").
+// Tolerates further attributes before the fn.
 function definedCommands(): string[] {
   const source = read('src-tauri/src/handlers.rs')
-  const chunks = source.split('#[tauri::command]').slice(1)
+  const chunks = source.split(/#\[tauri::command(?:\([^)]*\))?\]/).slice(1)
   if (chunks.length === 0) {
     throw new Error('src-tauri/src/handlers.rs has no #[tauri::command] functions')
   }
