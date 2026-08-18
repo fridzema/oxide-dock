@@ -13,5 +13,6 @@
     "editor.formatOnSave": true
   },
   "rust-analyzer.linkedProjects": ["src-tauri/Cargo.toml"],
+  "rust-analyzer.check.command": "clippy",
   "typescript.tsdk": "node_modules/typescript/lib"
 }
