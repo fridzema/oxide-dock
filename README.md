@@ -28,6 +28,7 @@ Starting a Tauri app from scratch means wiring up routing, state management, tes
 - **Vue 3** — reactive frontend with Composition API
 - **Vite** — fast dev server and build tool
 - **TypeScript** — type-safe frontend and configuration
+- **Guarded IPC** — a test fails the build if Rust commands and the TypeScript layer drift apart
 - **Tailwind CSS v4** — utility-first styling with Vite plugin
 - **Vue Router** — client-side routing
 - **Pinia** — type-safe state management
@@ -163,6 +164,16 @@ oxidedock/
 | ESLint       | v10     | Vue linting               |
 | Biome        | v2      | Formatting and linting    |
 | Lefthook     | latest  | Git hooks                 |
+
+## Type-Safe IPC
+
+Commands cross the Rust/TypeScript boundary through `src/shared/ipc.ts`: every command gets a typed wrapper, and Rust's structured `AppError` gets a matching TypeScript type.
+
+Three places have to agree for a command to work: it must be defined with `#[tauri::command]` in `src-tauri/src/handlers.rs`, registered in `tauri::generate_handler!` in `src-tauri/src/lib.rs`, and declared in `CommandResults` in `src/shared/ipc.ts`. Miss one and the failure shows up at runtime, usually as a confusing "command not found".
+
+`tests/unit/ipc-surface.test.ts` reads all three and fails the build if they disagree, so that class of bug cannot reach a release.
+
+This checks the command *surface* — that every command exists in all three places under the same name. It does not verify argument or payload field types; those still rely on the hand-written types in `src/shared/ipc.ts` matching the Rust structs.
 
 ## CI/CD
 
