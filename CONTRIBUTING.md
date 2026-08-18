@@ -64,7 +64,7 @@ make setup
 
 ## Code Style
 
-- **TypeScript/Vue**: ESLint + Prettier handle formatting and linting. Run `make format` before committing.
+- **TypeScript/Vue**: Biome handles formatting and linting, with ESLint for Vue-specific rules. Run `make format` before committing.
 - **Rust**: Clippy + Rustfmt. Run `make rust-format` and `make rust-lint`.
 - Pre-commit hooks (via Lefthook) run automatically on commit.
 

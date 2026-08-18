@@ -1,10 +1,10 @@
 {
   "recommendations": [
     "vue.volar",
+    "biomejs.biome",
     "dbaeumer.vscode-eslint",
-    "esbenp.prettier-vscode",
-    "oxc.oxc-vscode",
     "rust-lang.rust-analyzer",
+    "vadimcn.vscode-lldb",
     "bradlc.vscode-tailwindcss",
     "tauri-apps.tauri-vscode"
   ]
