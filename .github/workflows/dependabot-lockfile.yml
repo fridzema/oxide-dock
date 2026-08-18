@@ -1,0 +1,46 @@
+name: Dependabot Lockfile
+
+# Dependabot has no bun support: it updates package.json and leaves bun.lock
+# untouched. Regenerate the lockfile and commit it back onto the PR branch so
+# the merged commit stays self-consistent.
+on:
+  pull_request_target:
+    branches: [main]
+    paths:
+      - 'package.json'
+
+permissions:
+  contents: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  bun-lockfile:
+    if: github.actor == 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.DEPENDABOT_LOCKFILE_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - uses: oven-sh/setup-bun@v2
+
+      # pull_request_target grants a write token, so never run lifecycle
+      # scripts from the updated dependency tree.
+      - name: Regenerate bun.lock
+        run: bun install --no-frozen-lockfile --ignore-scripts
+
+      - name: Commit lockfile
+        run: |
+          if git diff --quiet -- bun.lock; then
+            echo "bun.lock already in sync"
+            exit 0
+          fi
+          git config user.name 'dependabot[bot]'
+          git config user.email '49699333+dependabot[bot]@users.noreply.github.com'
+          git commit -m 'chore(deps): regenerate bun.lock' -- bun.lock
+          git push
