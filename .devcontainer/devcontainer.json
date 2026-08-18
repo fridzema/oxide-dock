@@ -14,7 +14,7 @@
         "Vue.volar",
         "rust-lang.rust-analyzer",
         "bradlc.vscode-tailwindcss",
-        "esbenp.prettier-vscode"
+        "biomejs.biome"
       ]
     }
   }
