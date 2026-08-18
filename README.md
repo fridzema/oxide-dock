@@ -34,9 +34,8 @@ Starting a Tauri app from scratch means wiring up routing, state management, tes
 - **VueUse** — essential Vue composables
 - **Vitest** — fast unit and component testing
 - **Playwright** — e2e testing against the web frontend
-- **ESLint** — flat config with Vue 3 + TypeScript rules
-- **Prettier** — consistent code formatting
-- **Oxlint** — fast supplemental linting
+- **ESLint** — flat config with Vue 3 rules
+- **Biome** — fast formatting and linting
 - **Clippy + Rustfmt** — Rust linting and formatting
 - **cargo-audit** — Rust dependency security auditing
 - **Lefthook** — fast, parallel pre-commit hooks
@@ -113,7 +112,7 @@ oxidedock/
 
 | Command             | Description                                |
 | ------------------- | ------------------------------------------ |
-| `make lint`         | Run all linters (ESLint + Oxlint + Clippy) |
+| `make lint`         | Run all linters (ESLint + Biome + Clippy)  |
 | `make lint-fix`     | Auto-fix linting issues                    |
 | `make format`       | Format all files                           |
 | `make format-check` | Check formatting                           |
@@ -153,17 +152,16 @@ oxidedock/
 | ------------ | ------- | ------------------------- |
 | Tauri        | v2      | Desktop runtime           |
 | Vue          | v3      | Frontend framework        |
-| Vite         | v7      | Build tool                |
-| TypeScript   | v5      | Type safety               |
+| Vite         | v8      | Build tool                |
+| TypeScript   | v6      | Type safety               |
 | Tailwind CSS | v4      | Styling                   |
 | Vue Router   | v5      | Routing                   |
-| Pinia        | v3      | State management          |
+| Pinia        | v4      | State management          |
 | VueUse       | latest  | Composable utilities      |
 | Vitest       | latest  | Unit testing              |
 | Playwright   | latest  | E2e testing               |
-| ESLint       | v10     | JS/TS/Vue linting         |
-| Prettier     | v3      | Code formatting           |
-| Oxlint       | latest  | Fast supplemental linting |
+| ESLint       | v10     | Vue linting               |
+| Biome        | v2      | Formatting and linting    |
 | Lefthook     | latest  | Git hooks                 |
 
 ## CI/CD
@@ -172,7 +170,7 @@ oxidedock/
 
 Runs on every push to `main` and on pull requests:
 
-1. **Lint** — ESLint, Oxlint, Prettier check
+1. **Lint** — ESLint, Biome check, TypeScript type check
 2. **Rust Lint** — Clippy + Rustfmt (Linux only)
 3. **Test** — Vitest unit tests, Playwright e2e (chromium), Rust tests on all platforms with coverage on Linux
 4. **Audit** — `cargo audit` runs daily and on Cargo dependency changes (separate workflow)
