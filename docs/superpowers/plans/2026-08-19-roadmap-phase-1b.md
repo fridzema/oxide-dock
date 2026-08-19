@@ -199,9 +199,9 @@ Expected: clean, 18 tests pass.
 
 - [ ] **Step 4: Verify idempotency**
 
-Run `make add-window-state` a second time, then `git diff`.
+Capture `git diff` after the first apply, run `make add-window-state` a second time, and capture `git diff` again. The two must be byte-identical — no duplicated dependency, no duplicated plugin line, no error.
 
-Expected: the diff is identical to after the first run — no duplicated dependency, no duplicated plugin line, no error.
+A bare `git diff --exit-code` is **not** a valid check here: the first apply already dirties the tree, so it would fail regardless. Compare the two diffs, or `git add -A` between the applies and then use `git diff --exit-code`.
 
 - [ ] **Step 5: Revert and confirm clean**
 
@@ -262,7 +262,7 @@ Expected: the app launches and a tray icon appears in the system tray with a wor
 
 - [ ] **Step 4: Verify idempotency**
 
-Run `make add-tray` again, then `git diff`. Expected: unchanged from the first run, including the `_app` rename not being applied twice.
+Capture `git diff`, run `make add-tray` again, capture `git diff` again, and confirm the two are byte-identical — including that the `_app` rename was not applied twice. (Same caveat as the window-state recipe: the first apply dirties the tree, so compare the two diffs rather than using `git diff --exit-code` directly.)
 
 - [ ] **Step 5: Revert and confirm clean**
 
@@ -325,7 +325,7 @@ Confirm `src-tauri/tauri.conf.json` still parses as strict JSON and that `src-ta
 
 - [ ] **Step 4: Verify idempotency**
 
-Run `make add-updater` again, then `git diff`. Expected: unchanged — no duplicate permission entry, no duplicate endpoint, no duplicate dependency.
+Capture `git diff`, run `make add-updater` again, capture `git diff` again, and confirm the two are byte-identical — no duplicate permission entry, no duplicate endpoint, no duplicate dependency. (Same caveat: compare the two diffs rather than using `git diff --exit-code` directly.)
 
 - [ ] **Step 5: Revert and confirm clean**
 
@@ -368,7 +368,13 @@ This is the part no competitor has, and the reason the positioning line says "ve
 
 - A matrix over `[window-state, tray, updater]`
 - Each leg: checkout, `./.github/actions/setup-bun`, `./.github/actions/setup-tauri`, `bun install`, `make add-<recipe>`, then `bun run lint`, `bun run test:unit`, and `cd src-tauri && cargo clippy -- -D warnings && cargo test`
-- A second run of `make add-<recipe>` followed by `git diff --exit-code`, proving idempotency in CI rather than only on a developer's machine
+- An idempotency check, proving it in CI rather than only on a developer's machine. Note that the *first* apply already dirties the tree, so a bare `git diff --exit-code` fails whether or not the recipe is idempotent. Stage the post-apply state, then apply again and diff the worktree against the index:
+  ```bash
+  make add-<recipe>
+  git add -A
+  make add-<recipe>
+  git diff --exit-code
+  ```
 - `fail-fast: false` so one broken recipe does not mask the others
 - `timeout-minutes: 15`
 - Reuse the existing composite actions in `.github/actions/` rather than duplicating setup steps
@@ -401,6 +407,7 @@ Simulate what CI does for the simplest recipe, in a scratch clone so the working
 TMP=$(mktemp -d)
 git clone --depth 1 file://$(pwd) "$TMP/probe"
 cd "$TMP/probe" && bun install && make add-window-state && bun run lint && bun run test:unit
+git add -A
 make add-window-state && git diff --exit-code && echo "IDEMPOTENT"
 ```
 
