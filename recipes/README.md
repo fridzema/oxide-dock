@@ -41,9 +41,9 @@ after a merge without producing duplicate plugin lines or duplicate dependencies
 ## Verified in CI
 
 Every recipe is applied to a clean checkout on every pull request, then linted, tested and
-type-checked, then applied a second time to prove the result is unchanged. Full cross-platform
-Tauri builds for each recipe run nightly. A recipe that rots is worse than no recipe, so the
-build catches it rather than you.
+type-checked, then applied a second time to prove the result is unchanged. A full `make ci` for
+each recipe — `bun tauri build` included — runs nightly on Linux. A recipe that rots is worse
+than no recipe, so the build catches it rather than you.
 
 ## How insertion works
 
