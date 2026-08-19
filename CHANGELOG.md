@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.8.1...oxidedock-v0.9.0) (2026-08-19)
+
+
+### Features
+
+* land IPC drift guard (roadmap phase 1a) ([67cfb77](https://github.com/fridzema/oxide-dock/commit/67cfb77cc357847c391d2cab3cd18e82c3f21072))
+* land recipe system (roadmap phase 1b) ([0cd666e](https://github.com/fridzema/oxide-dock/commit/0cd666e429a499f9818b88ed0910bc08a7a48cf4))
+* **recipes:** add insertion anchors and shared apply helpers ([5109393](https://github.com/fridzema/oxide-dock/commit/510939304d548a8c0849a1a2518f11b135358130))
+* **recipes:** add tray recipe ([66484a1](https://github.com/fridzema/oxide-dock/commit/66484a141b00604bba3ab6e48797ebfba704ae00))
+* **recipes:** add updater recipe ([3482451](https://github.com/fridzema/oxide-dock/commit/348245111333da834c8b59e0a091ab9d125b9364))
+* **recipes:** add window-state recipe ([895fed0](https://github.com/fridzema/oxide-dock/commit/895fed065e16701a5bf1644c1357a5f520ed7f06))
+
+
+### Bug Fixes
+
+* **ci:** cache Linux Tauri dependencies to stop apt timeouts ([#86](https://github.com/fridzema/oxide-dock/issues/86)) ([81aed9b](https://github.com/fridzema/oxide-dock/commit/81aed9b5e3901efb6f6b84f286f3b7d78a049a16))
+* **ci:** make the TypeScript type check actually check something ([159e373](https://github.com/fridzema/oxide-dock/commit/159e3733178a0c8fd887e94f6517ed452b9b9200))
+* **ci:** stop tauri-action v1 from blanking the release body ([#81](https://github.com/fridzema/oxide-dock/issues/81)) ([ffc2d2e](https://github.com/fridzema/oxide-dock/commit/ffc2d2eb946554045a06ab0a5e81c08cc53d8ce6))
+* **recipes:** check the tray anchor before renaming the setup binding ([77d7ce4](https://github.com/fridzema/oxide-dock/commit/77d7ce439348270bdb712a019a3e27d4f695cf1f))
+* **recipes:** never write unvalidated formatter output to tracked files ([6f89553](https://github.com/fridzema/oxide-dock/commit/6f8955327245fd2d42f3c7064cddbffc55b2378d))
+* **vscode:** enable Rust type pretty-printing in debug configs ([0a5d203](https://github.com/fridzema/oxide-dock/commit/0a5d20345b39a255ef453fbf7865e7d0ae68d8c1))
+* **vscode:** format with Biome and add Rust debug configuration ([5e75936](https://github.com/fridzema/oxide-dock/commit/5e75936a9f7f4723ede549e4ab61230d4e523101))
+* **vscode:** run rust-analyzer checks through clippy ([505108d](https://github.com/fridzema/oxide-dock/commit/505108d379827040a931e38404e9ff56c4cbbfef))
+
 ## [0.8.1](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.8.0...oxidedock-v0.8.1) (2026-08-18)
 
 
