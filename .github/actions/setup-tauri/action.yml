@@ -29,10 +29,7 @@ runs:
 
     - name: Install Linux dependencies
       if: runner.os == 'Linux'
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
-      shell: bash
+      uses: ./.github/actions/linux-deps
 
     - run: bun install --frozen-lockfile
       shell: bash

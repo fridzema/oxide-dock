@@ -73,9 +73,7 @@ jobs:
         with:
           workspaces: src-tauri
       - name: Install Linux dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+        uses: ./.github/actions/linux-deps
 
       - name: Clippy
         run: cd src-tauri && cargo clippy -- -D warnings
@@ -103,9 +101,7 @@ jobs:
           workspaces: src-tauri
       - name: Install Linux dependencies
         if: matrix.platform == 'ubuntu-22.04'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+        uses: ./.github/actions/linux-deps
 
       - name: Install cargo-llvm-cov
         if: matrix.platform == 'ubuntu-22.04' && github.event_name == 'push'
