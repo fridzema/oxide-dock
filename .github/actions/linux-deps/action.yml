@@ -1,0 +1,15 @@
+name: Linux Tauri dependencies
+description: Install the system libraries Tauri needs on Linux, restoring them from cache when possible
+
+runs:
+  using: composite
+  steps:
+    # apt-get install of libwebkit2gtk regularly took long enough to blow the
+    # 10-minute rust-lint budget and the 25-minute build budget, which surfaces
+    # as a "cancelled" job rather than an obvious timeout. Caching the packages
+    # removes the download from the critical path. Kept as its own action so
+    # setup-tauri and ci.yml's rust-lint share one definition.
+    - uses: awalsh128/cache-apt-pkgs-action@v1.6.3
+      with:
+        packages: libwebkit2gtk-4.1-dev libappindicator3-dev librsvg2-dev patchelf
+        version: tauri-v1
