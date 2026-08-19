@@ -1,0 +1,47 @@
+name: Recipes Nightly
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        recipe: [window-state, tray, updater]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-tauri
+        with:
+          rust-components: llvm-tools-preview
+      - uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(bun pm ls @playwright/test | grep @playwright/test | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+      # make ci runs the full Playwright suite, which covers all three engines.
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: bunx playwright install --with-deps chromium firefox webkit
+
+      - name: Apply recipe
+        run: make add-${{ matrix.recipe }}
+
+      - name: Install recipe dependencies
+        run: bun install --no-frozen-lockfile
+
+      - name: Full CI pipeline
+        run: make ci

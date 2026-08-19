@@ -1,0 +1,48 @@
+name: Recipes
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  apply:
+    strategy:
+      fail-fast: false
+      matrix:
+        recipe: [window-state, tray, updater]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-tauri
+
+      - name: Apply recipe
+        run: make add-${{ matrix.recipe }}
+
+      - name: Lint
+        run: bun run lint
+      - name: Vitest
+        run: bun run test:unit
+      - name: Clippy
+        run: cd src-tauri && cargo clippy -- -D warnings
+      - name: Rust tests
+        run: cd src-tauri && cargo test
+
+      # Every build above regenerates the tracked src-tauri/gen/schemas/*.json,
+      # so stage the applied state only once all builds are done. Otherwise the
+      # idempotency diff below trips on regenerated schemas instead of on a
+      # genuinely non-idempotent recipe.
+      - name: Stage applied state
+        run: git add -A
+
+      - name: Re-apply recipe
+        run: make add-${{ matrix.recipe }}
+
+      - name: Verify idempotency
+        run: git diff --exit-code
