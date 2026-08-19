@@ -375,6 +375,7 @@ This is the part no competitor has, and the reason the positioning line says "ve
   make add-<recipe>
   git diff --exit-code
   ```
+- **Step ordering matters.** `src-tauri/gen/schemas/*.json` are tracked files that any Rust build regenerates. Run all build and check steps *before* the `git add -A`, otherwise `git diff --exit-code` fails on regenerated schemas rather than on genuine non-idempotency. Order: apply → lint/test/clippy → `git add -A` → apply again → `git diff --exit-code`.
 - `fail-fast: false` so one broken recipe does not mask the others
 - `timeout-minutes: 15`
 - Reuse the existing composite actions in `.github/actions/` rather than duplicating setup steps
