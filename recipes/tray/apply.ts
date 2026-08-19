@@ -63,8 +63,11 @@ tray.build(app)?;
 `
 
 addCargoFeatures('tauri', FEATURES)
-bindSetupApp()
+// insertAtMarker first: it is the step that can fail (a missing `// oxide:setup`
+// anchor throws). Renaming the binding before that would leave the tree with an
+// `app` the setup closure never uses, failing `cargo clippy -- -D warnings`.
 insertAtMarker(LIB_RS, '// oxide:setup', TRAY_SETUP)
+bindSetupApp()
 
 console.log('Recipe: tray')
 log(`tauri features ${FEATURES.join(' and ')} are enabled in src-tauri/Cargo.toml`)
