@@ -47,23 +47,67 @@ function write(filePath: string, content: string): boolean {
 }
 
 /**
- * Runs Biome's formatter over generated JSON so the result matches what
- * `make format-check` expects. Falls back to plain 2-space JSON if Biome is
- * unavailable, and says so rather than failing silently.
+ * Resolves a Biome executable that cannot be something else.
+ *
+ * Never invoke a bare `bunx biome`: with `node_modules` present that resolves
+ * to the local `@biomejs/biome`, but without it bunx downloads an unrelated
+ * npm package that happens to be named `biome`, which exits 0 and prints
+ * nothing. Prefer the local binary, and name the scoped package otherwise.
  */
-function formatJson(filePath: string, value: unknown): string {
+function biomeCommand(): { file: string; prefix: string[] } {
+  const local = join(repoRoot, 'node_modules', '.bin', 'biome')
+  return existsSync(local)
+    ? { file: local, prefix: [] }
+    : { file: 'bunx', prefix: ['--bun', '@biomejs/biome'] }
+}
+
+/** Pipes `input` through `biome format`, returning what Biome wrote to stdout. */
+function runBiomeFormat(filePath: string, input: string): string {
+  const { file, prefix } = biomeCommand()
+  return execFileSync(file, [...prefix, 'format', `--stdin-file-path=${filePath}`], {
+    cwd: repoRoot,
+    input,
+    encoding: 'utf8',
+    stdio: ['pipe', 'pipe', 'ignore'],
+  })
+}
+
+/**
+ * Runs Biome's formatter over generated JSON so the result matches what
+ * `make format-check` expects.
+ *
+ * Only ever returns a string this function has parsed as JSON. A formatter
+ * that throws, prints nothing, or prints something that is not JSON is a
+ * formatter failure, not a licence to overwrite a tracked file with it — that
+ * is how a stray binary named `biome` truncates package.json to zero bytes.
+ * On any such failure the plain 2-space rendering is used instead: valid JSON,
+ * just not Biome-formatted, and the recipe says so rather than failing
+ * silently. `format` is injectable so tests can drive the failure paths.
+ */
+export function formatJson(
+  filePath: string,
+  value: unknown,
+  format: (filePath: string, input: string) => string = runBiomeFormat,
+): string {
   const raw = `${JSON.stringify(value, null, 2)}\n`
-  try {
-    return execFileSync('bunx', ['biome', 'format', '--write', `--stdin-file-path=${filePath}`], {
-      cwd: repoRoot,
-      input: raw,
-      encoding: 'utf8',
-      stdio: ['pipe', 'pipe', 'ignore'],
-    })
-  } catch {
-    log(`could not run Biome on ${filePath} — run "bun run format" before committing`)
+  const unformatted = (): string => {
+    log(`could not format ${filePath} with Biome — run "bun run format" before committing`)
     return raw
   }
+
+  let formatted: string
+  try {
+    formatted = format(filePath, raw)
+  } catch {
+    return unformatted()
+  }
+
+  try {
+    JSON.parse(formatted)
+  } catch {
+    return unformatted()
+  }
+  return formatted
 }
 
 function stripIndent(code: string): string[] {

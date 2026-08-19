@@ -21,6 +21,7 @@ import {
   addBunDependency,
   addCapabilityPermissions,
   addCargoDependency,
+  formatJson,
   insertAtMarker,
   log,
   repoRoot,
@@ -90,15 +91,7 @@ function configureTauri(): void {
   plugins.updater = updater
   config.plugins = plugins
 
-  writeFileSync(path, `${JSON.stringify(config, null, 2)}\n`)
-  try {
-    execFileSync('bunx', ['biome', 'format', '--write', TAURI_CONF], {
-      cwd: repoRoot,
-      stdio: 'ignore',
-    })
-  } catch {
-    log(`could not run Biome on ${TAURI_CONF} — run "bun run format" before committing`)
-  }
+  writeFileSync(path, formatJson(TAURI_CONF, config))
 }
 
 addCargoDependency(CRATE, CRATE_VERSION)
