@@ -175,6 +175,32 @@ Three places have to agree for a command to work: it must be defined with `#[tau
 
 This checks the command *surface* — that every command exists in all three places under the same name. It does not verify argument or payload field types; those still rely on the hand-written types in `src/shared/ipc.ts` matching the Rust structs.
 
+## Recipes
+
+Optional features are opt-in, not preinstalled. Each one is a **recipe** — an idempotent script that
+wires the feature into your checkout: dependency, plugin registration, capability, config.
+
+```bash
+make add-window-state   # remember window size and position across restarts
+make add-tray           # system tray icon with a menu
+make add-updater        # in-app auto-updates (needs signing keys)
+```
+
+Each recipe prints what it changed and points at its own README under `recipes/`. Recipes modify
+your working tree and are meant to be run once and committed — review the diff like any other
+change. `git checkout --` is the undo.
+
+### Verified in CI
+
+`recipes.yml` applies every recipe to a clean checkout on every push and pull request, then runs
+ESLint, Biome, the TypeScript type check, the Vitest suite, `cargo clippy -- -D warnings` and
+`cargo test` against the result. It applies the recipe a second time and fails if that produces any
+diff, so a recipe that stops being idempotent cannot land.
+
+Pull requests deliberately skip the app build to keep the feedback loop short. `recipes-nightly.yml`
+covers it: once a day it runs the full `make ci` — including `bun tauri build` — for every recipe on
+Linux.
+
 ## CI/CD
 
 ### CI Pipeline (`ci.yml`)

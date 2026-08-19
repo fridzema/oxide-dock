@@ -22,4 +22,6 @@ window.addEventListener('unhandledrejection', (event) => {
   logError(`Unhandled promise rejection: ${msg}`).catch(() => {})
 })
 
+// oxide:frontend-init
+
 app.mount('#app')

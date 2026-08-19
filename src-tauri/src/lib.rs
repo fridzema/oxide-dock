@@ -26,7 +26,12 @@ pub fn run() -> Result<(), Box<dyn std::error::Error>> {
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_os::init())
+        // oxide:plugins
         .manage(state::AppState::default())
+        .setup(|_app| {
+            // oxide:setup
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             handlers::greet,
             handlers::greet_checked,

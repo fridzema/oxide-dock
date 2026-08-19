@@ -1,0 +1,69 @@
+name: Recipes Nightly
+
+on:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        recipe: [window-state, tray, updater]
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-tauri
+        with:
+          rust-components: llvm-tools-preview
+      - uses: taiki-e/install-action@cargo-llvm-cov
+
+      - name: Get Playwright version
+        id: playwright-version
+        run: echo "version=$(bun pm ls @playwright/test | grep @playwright/test | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v6
+        id: playwright-cache
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+      # make ci runs the full Playwright suite, which covers all three engines.
+      - name: Install Playwright browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: bunx playwright install --with-deps chromium firefox webkit
+
+      - name: Apply recipe
+        run: make add-${{ matrix.recipe }}
+
+      - name: Install recipe dependencies
+        run: bun install --no-frozen-lockfile
+
+      # The updater recipe stops one step short on purpose: it seeds an empty
+      # `plugins.updater.pubkey` because only you can generate your signing
+      # keypair. `bun tauri build` then refuses to bundle update artifacts
+      # ("A public key has been found, but no private key"), so this leg
+      # generates a throwaway pair and wires it in exactly the way the recipe's
+      # README tells a user to. That keeps `make ci` unmodified and still builds
+      # and signs the updater bundle for real, rather than skipping the signing
+      # step the recipe exists to set up. The key lives only in this runner.
+      #
+      # TAURI_SIGNING_PRIVATE_KEY must hold the key itself: the CLI advertises
+      # TAURI_SIGNING_PRIVATE_KEY_PATH, but the bundler does not read it and
+      # still fails the build. Both key files are a single line, no newline.
+      - name: Generate a throwaway updater signing key
+        if: matrix.recipe == 'updater'
+        run: |
+          bun tauri signer generate -w "$RUNNER_TEMP/updater.key" --password ''
+          jq --arg key "$(cat "$RUNNER_TEMP/updater.key.pub")" \
+            '.plugins.updater.pubkey = $key' src-tauri/tauri.conf.json > tauri.conf.patched
+          mv tauri.conf.patched src-tauri/tauri.conf.json
+          echo "TAURI_SIGNING_PRIVATE_KEY=$(cat "$RUNNER_TEMP/updater.key")" >> "$GITHUB_ENV"
+          echo "TAURI_SIGNING_PRIVATE_KEY_PASSWORD=" >> "$GITHUB_ENV"
+
+      - name: Full CI pipeline
+        run: make ci
