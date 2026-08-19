@@ -22,8 +22,10 @@ jobs:
         run: bunx eslint .
       - name: Biome
         run: bunx biome check .
+      # `-b`, not `--noEmit`: tsconfig.json is solution-style (`files: []`), so a
+      # bare `vue-tsc --noEmit` resolves no files and passes unconditionally.
       - name: Type check
-        run: bunx vue-tsc --noEmit
+        run: bun run typecheck
 
   test-unit:
     runs-on: ubuntu-latest

@@ -27,6 +27,10 @@ jobs:
 
       - name: Lint
         run: bun run lint
+      # Recipes can insert frontend code at the `// oxide:frontend-init` anchor
+      # in src/main.ts, so the applied tree gets the same type check as ci.yml.
+      - name: Type check
+        run: bun run typecheck
       - name: Vitest
         run: bun run test:unit
       - name: Clippy

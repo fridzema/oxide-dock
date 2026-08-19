@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "lint": "eslint . && biome check .",
     "lint:fix": "eslint . --fix && biome check --write .",
+    "typecheck": "vue-tsc -b --force",
     "format": "biome format --write .",
     "format:check": "biome format .",
     "test:unit": "vitest run",
