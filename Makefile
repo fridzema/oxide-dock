@@ -1,6 +1,6 @@
 .PHONY: help dev dev-frontend build build-debug lint lint-fix format format-check \
 	test test-unit test-e2e test-watch rust-lint rust-format rust-audit rust-test \
-	rust-coverage coverage ci check setup bootstrap clean release-status
+	rust-coverage coverage ci check setup bootstrap clean release-status add-%
 
 # Help (default target)
 help:
@@ -30,6 +30,11 @@ help:
 	@echo "  rust-audit     Run cargo audit"
 	@echo "  rust-test      Run cargo test"
 	@echo "  rust-coverage  Run Rust tests with coverage"
+	@echo ""
+	@echo "Recipes:"
+	@echo "  add-window-state  Remember window size and position across restarts"
+	@echo "  add-tray          Add a system tray icon with a menu"
+	@echo "  add-updater       Add in-app auto-updates (needs signing keys)"
 	@echo ""
 	@echo "Release:"
 	@echo "  release-status Check for open Release PRs"
@@ -151,6 +156,11 @@ bootstrap:
 clean:
 	rm -rf node_modules dist
 	cd src-tauri && cargo clean
+
+# Recipes
+add-%:
+	@test -d recipes/$* || { echo "Unknown recipe: $*. Available: $$(ls -d recipes/*/ | grep -v _lib | xargs -n1 basename | tr '\n' ' ')"; exit 1; }
+	bun recipes/$*/apply.ts
 
 # Release
 release-status:
