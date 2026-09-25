@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.1](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.9.0...oxidedock-v0.9.1) (2026-09-25)
+
+
+### Bug Fixes
+
+* **deps:** clear dependency audit and repair Recipes Nightly ([#93](https://github.com/fridzema/oxide-dock/issues/93)) ([2eee424](https://github.com/fridzema/oxide-dock/commit/2eee424903fe312b13c7996a21711c8375eb6a9d))
+* **deps:** upgrade Vitest to 5 and VueUse to 15, refresh Cargo.lock ([#95](https://github.com/fridzema/oxide-dock/issues/95)) ([724016f](https://github.com/fridzema/oxide-dock/commit/724016f93c0b9092457efe4d86499991adfe3c7b))
+
 ## [0.9.0](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.8.1...oxidedock-v0.9.0) (2026-08-19)
 
 
