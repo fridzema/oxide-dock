@@ -27,15 +27,22 @@ jobs:
       - name: Get Playwright version
         id: playwright-version
         run: echo "version=$(bun pm ls @playwright/test | grep @playwright/test | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      # Own cache key: ci.yml caches a chromium-only browser set under the
+      # plain `playwright-<os>-<version>` key on a different Ubuntu image.
       - uses: actions/cache@v6
         id: playwright-cache
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
+          key: playwright-all-${{ runner.os }}-${{ steps.playwright-version.outputs.version }}
       # make ci runs the full Playwright suite, which covers all three engines.
       - name: Install Playwright browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
         run: bunx playwright install --with-deps chromium firefox webkit
+      # The cache only restores browser binaries, not the apt packages WebKit
+      # needs (libavif, libGLESv2, libx264, ...), so install those on a hit too.
+      - name: Install Playwright system dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: bunx playwright install-deps chromium firefox webkit
 
       - name: Apply recipe
         run: make add-${{ matrix.recipe }}
@@ -62,6 +69,9 @@ jobs:
           jq --arg key "$(cat "$RUNNER_TEMP/updater.key.pub")" \
             '.plugins.updater.pubkey = $key' src-tauri/tauri.conf.json > tauri.conf.patched
           mv tauri.conf.patched src-tauri/tauri.conf.json
+          # jq pretty-prints every array across lines; restore Biome's layout
+          # so `make ci`'s lint step doesn't reject the patched config.
+          bunx biome format --write src-tauri/tauri.conf.json
           echo "TAURI_SIGNING_PRIVATE_KEY=$(cat "$RUNNER_TEMP/updater.key")" >> "$GITHUB_ENV"
           echo "TAURI_SIGNING_PRIVATE_KEY_PASSWORD=" >> "$GITHUB_ENV"
 
