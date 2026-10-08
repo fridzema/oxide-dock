@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.2](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.9.1...oxidedock-v0.9.2) (2026-10-08)
+
+
+### Bug Fixes
+
+* **deps:** refresh npm and Cargo deps, clear bun audit ([#101](https://github.com/fridzema/oxide-dock/issues/101)) ([6e035d4](https://github.com/fridzema/oxide-dock/commit/6e035d482ecfad9107ca2011788d762efe4c6bd7))
+
 ## [0.9.1](https://github.com/fridzema/oxide-dock/compare/oxidedock-v0.9.0...oxidedock-v0.9.1) (2026-09-25)
 
 
